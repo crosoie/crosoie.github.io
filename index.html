@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Linux, Docker, Python" />
 
 
 
@@ -138,6 +138,15 @@
 
 
 
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-54005049-4', 'auto');
+  ga('send', 'pageview');
+</script>
 
 
 
@@ -345,6 +354,16 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/03/04/pcs를-이용한-ha구성/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/04/pcs를-이용한-ha구성/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -377,17 +396,14 @@
 <blockquote>
 <p><code>drbd</code>: HA 클러스터를 위해 디자인 된 네트워크 블럭 디바이스</p>
 </blockquote>
-<hr>
 <h1 id="기본-정보"><a href="#기본-정보" class="headerlink" title="기본 정보"></a>기본 정보</h1><blockquote>
 <p>CentOS 7.3<br>pcs-0.9.152-10<br>pacemaker-1.1<br>corosync-2.4</p>
 </blockquote>
-<hr>
 <h1 id="기본-설정"><a href="#기본-설정" class="headerlink" title="기본 설정"></a>기본 설정</h1><h2 id="호스트-설정"><a href="#호스트-설정" class="headerlink" title="호스트 설정"></a>호스트 설정</h2><blockquote>
 <p>두서버 모두 적용 해 주세요.</p>
 </blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># cat /etc/hosts</span></div><div class="line">127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4</div><div class="line">::1         localhost localhost.localdomain localhost6 localhost6.localdomain6</div><div class="line"> </div><div class="line">10.0.0.3 master</div><div class="line">10.0.0.4 standby</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># cat /etc/hosts</span></div><div class="line">127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4</div><div class="line">::1         localhost localhost.localdomain localhost6 localhost6.localdomain6</div><div class="line"></div><div class="line">10.0.0.3 master</div><div class="line">10.0.0.4 standby</div></pre></td></tr></table></figure>
 <h2 id="방화벽-설정"><a href="#방화벽-설정" class="headerlink" title="방화벽 설정"></a>방화벽 설정</h2><p>두서버가 서로 통신이 되어야 합니다.<br>저는 내부망을 ALL로 열었어요…</p>
-<hr>
 <h1 id="DRBD"><a href="#DRBD" class="headerlink" title="DRBD"></a>DRBD</h1><h2 id="패키지-설치"><a href="#패키지-설치" class="headerlink" title="패키지 설치"></a>패키지 설치</h2><p>DRBD 패키지를 설치해줍니다.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># cd /usr/local/src</span></div><div class="line">root <span class="comment"># wget http://elrepo.reloumirrors.net/elrepo/el7/x86_64/RPMS/elrepo-release-7.0-2.el7.elrepo.noarch.rpm</span></div><div class="line">root <span class="comment"># rpm -ivh elrepo-release-7.0-2.el7.elrepo.noarch.rpm</span></div><div class="line">root <span class="comment"># yum -y install drbd kmod-drbd84 kernel-devel</span></div></pre></td></tr></table></figure>
 <h2 id="DRBD-설정"><a href="#DRBD-설정" class="headerlink" title="DRBD 설정"></a>DRBD 설정</h2><blockquote>
@@ -401,7 +417,6 @@
 <p>MASTER에서 실행합니다.</p>
 </blockquote>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># drbdadm -- --overwrite-data-of-peer primary storage</span></div></pre></td></tr></table></figure>
-<hr>
 <h1 id="HA-구성"><a href="#HA-구성" class="headerlink" title="HA 구성"></a>HA 구성</h1><h2 id="패키지-설치-1"><a href="#패키지-설치-1" class="headerlink" title="패키지 설치"></a>패키지 설치</h2><blockquote>
 <p>두서버 모두 적용 해 주세요.</p>
 </blockquote>
@@ -438,7 +453,6 @@
 </blockquote>
 <h2 id="클러스터-구성-확인"><a href="#클러스터-구성-확인" class="headerlink" title="클러스터 구성 확인"></a>클러스터 구성 확인</h2><p><code>pcs status</code> 명령어를 통해 현재 노드의 상태, 리소스 리스트, 데몬상태를 모두 확인 할 수 있습니다.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># pcs status</span></div><div class="line">Cluster name: FileCluster</div><div class="line">Stack: corosync</div><div class="line">Current DC: master (version 1.1.15-11.el7_3.2<span class="_">-e</span>174ec8) - partition with quorum</div><div class="line">Last updated: Sat Mar  4 00:05:29 2017		Last change: Fri Mar  3 22:20:13 2017 by root via cibadmin on master</div><div class="line"> </div><div class="line">2 nodes and 8 resources configured</div><div class="line"> </div><div class="line">Online: [ master standby ]</div><div class="line"> </div><div class="line">Full list of resources:</div><div class="line"> </div><div class="line"> Master/Slave Set: DataSync [Data]</div><div class="line">     Masters: [ master ]</div><div class="line">     Slaves: [ standby ]</div><div class="line"> Resource Group: HA-GROUP</div><div class="line">     internal_ip	(ocf::heartbeat:IPaddr2):	Started master</div><div class="line">     external_ip	(ocf::heartbeat:IPaddr2):	Started master</div><div class="line">     Storage	(ocf::heartbeat:Filesystem):	Started master</div><div class="line">     apache	(lsb:apache):	Started master</div><div class="line"> Clone Set: ping_check-clone [ping_check]</div><div class="line">     Started: [ master standby ]</div><div class="line"> </div><div class="line">Daemon Status:</div><div class="line">  corosync: active/disabled</div><div class="line">  pacemaker: active/disabled</div><div class="line">  pcsd: active/enabled</div></pre></td></tr></table></figure>
-<hr>
 <h1 id="그-외-소소한-팁"><a href="#그-외-소소한-팁" class="headerlink" title="그 외 소소한 팁"></a>그 외 소소한 팁</h1><h2 id="PCS-설정-삭제"><a href="#PCS-설정-삭제" class="headerlink" title="PCS 설정 삭제"></a>PCS 설정 삭제</h2><p>설정을 잘못할때가 있죠.. 새로운 마음으로 다시 시작할 때 아래와 같이 사용합니다.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># pcs cluster stop --all</span></div><div class="line">root <span class="comment"># pcs cluster destroy --all</span></div></pre></td></tr></table></figure>
 <h2 id="PCS-cluster-standby-설정-on-off"><a href="#PCS-cluster-standby-설정-on-off" class="headerlink" title="PCS cluster standby 설정 (on/off)"></a>PCS cluster standby 설정 (on/off)</h2><p>장애테스느는 아래와 같이 하시면 됩니다.<br>standby 로 설정하면 해당 노드의 상태가 Online에서 standby로 되며 서비스에서 빠집니다.</p>
@@ -565,6 +579,16 @@
           
 
           
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/02/23/dicrect-lvs mode for docker/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/02/23/dicrect-lvs mode for docker/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -742,6 +766,16 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/01/20/docker 1.13 Release/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/01/20/docker 1.13 Release/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -900,6 +934,16 @@
           
 
           
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/12/04/docker-swarm/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/12/04/docker-swarm/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -1062,6 +1106,16 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/12/04/SSL-Convert/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/12/04/SSL-Convert/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1210,6 +1264,16 @@
           
 
           
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/12/04/Linux-Perfomance-Analysis/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/12/04/Linux-Perfomance-Analysis/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -1419,6 +1483,16 @@
           
 
           
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/12/04/runit/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/12/04/runit/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -1737,28 +1811,34 @@
 
   
 
+    <script type="text/javascript">
+      var disqus_shortname = 'yoanp';
+      var disqus_identifier = 'index.html';
+
+      var disqus_title = "";
 
 
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
 
-	
+      run_disqus_script('count.js');
 
+      
 
-
-
-
+    </script>
   
 
 
 
 
 
-  
 
 
-
-
-
-  
 
 
 
