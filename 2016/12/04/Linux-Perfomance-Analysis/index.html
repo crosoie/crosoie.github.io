@@ -1,0 +1,826 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="linux,se,uptime,dmesg,vmstat,mpstat,pidstat,iostat,free,sar," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="넷플릭스 테크 블로그에 올라온 포스트를 번역하였습니다.시스템 엔지니어로써 기본적으로 알아야하는 명령어들입니다.리마인드 겸 제 입맛에 맞게 해석-작성되었으니.. 참고해주시면 감사하겠습니다.
+당신은 서버의 퍼포먼스 이슈가 발생하여 서버에 로그인 하였을 때 1분 동안 확인 하는 것이 무엇입니까?
+우리(넷플릭스)는 거대한 EC2 리눅스 클라우드를 가지고 있으며,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux Perfomance Analysis">
+<meta property="og:url" content="http://yoanp.github.io/2016/12/04/Linux-Perfomance-Analysis/index.html">
+<meta property="og:site_name" content="Yoanp">
+<meta property="og:description" content="넷플릭스 테크 블로그에 올라온 포스트를 번역하였습니다.시스템 엔지니어로써 기본적으로 알아야하는 명령어들입니다.리마인드 겸 제 입맛에 맞게 해석-작성되었으니.. 참고해주시면 감사하겠습니다.
+당신은 서버의 퍼포먼스 이슈가 발생하여 서버에 로그인 하였을 때 1분 동안 확인 하는 것이 무엇입니까?
+우리(넷플릭스)는 거대한 EC2 리눅스 클라우드를 가지고 있으며,">
+<meta property="og:updated_time" content="2017-03-02T12:20:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux Perfomance Analysis">
+<meta name="twitter:description" content="넷플릭스 테크 블로그에 올라온 포스트를 번역하였습니다.시스템 엔지니어로써 기본적으로 알아야하는 명령어들입니다.리마인드 겸 제 입맛에 맞게 해석-작성되었으니.. 참고해주시면 감사하겠습니다.
+당신은 서버의 퍼포먼스 이슈가 발생하여 서버에 로그인 하였을 때 1분 동안 확인 하는 것이 무엇입니까?
+우리(넷플릭스)는 거대한 EC2 리눅스 클라우드를 가지고 있으며,">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoanp.github.io/2016/12/04/Linux-Perfomance-Analysis/"/>
+
+
+
+
+
+  <title> Linux Perfomance Analysis | Yoanp </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yoanp</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">My Blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoanp.github.io/2016/12/04/Linux-Perfomance-Analysis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yoan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yoanp">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Linux Perfomance Analysis
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-04T00:33:52+09:00">
+                2016-12-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>넷플릭스 테크 블로그에 올라온 <a href="http://techblog.netflix.com/2015/11/linux-performance-analysis-in-60s.html?m=1" target="_blank" rel="external">포스트</a>를 번역하였습니다.<br>시스템 엔지니어로써 기본적으로 알아야하는 명령어들입니다.<br>리마인드 겸 제 입맛에 맞게 해석-작성되었으니.. 참고해주시면 감사하겠습니다.</p>
+<p>당신은 서버의 퍼포먼스 이슈가 발생하여 서버에 로그인 하였을 때 1분 동안 확인 하는 것이 무엇입니까?</p>
+<p>우리(넷플릭스)는 거대한 EC2 리눅스 클라우드를 가지고 있으며, 다수의 퍼포먼스 분석 툴을 이용한 모니터링 및 퍼포먼스에 대한 연구를 진행하고 있습니다.</p>
+<p>그 툴들에는 <a href="http://techblog.netflix.com/2014/12/introducing-atlas-netflixs-primary.html" target="_blank" rel="external">Atlas</a> 와 <a href="http://techblog.netflix.com/2015/04/introducing-vector-netflixs-on-host.html" target="_blank" rel="external">Vector</a> 가 포함되어 있지요. 이러한 도구들은 대부분의 이슈를 해결하는데 도움이 되지만, 때때로 인스턴스에 접근하여 기존의 보편적인 리눅스 퍼포먼스 툴을 사용해야 하는 일들이 생깁니다.</p>
+<p>이 포스트를 통해, 넷플릭스 퍼포먼스 엔지니어링 팀이 1분 동안에 당신이 사용할 수 있는 표준 리눅스 툴들을 이용하여 최고의 퍼포먼스 조사하는 방법을 보여드리겠습니다.</p>
+<hr>
+<h3 id="첫번째-1분-summary"><a href="#첫번째-1분-summary" class="headerlink" title="첫번째 1분: summary"></a>첫번째 1분: summary</h3><p>당신은 1분동안 10개의 커맨드들을 통하여 실행되는 프로세스들과 높은 레벨의 시스템 리소스를 파악해야 합니다.<br>커맨드들은 리소스들을 활용하여 쉽게 해석하여 에러와 포화 메트릭스를 찾습니다.</p>
+<ul>
+<li>uptime</li>
+<li>dmesg | tail</li>
+<li>vmstat 1</li>
+<li>mpstat -P ALL 1</li>
+<li>pidstat 1</li>
+<li>iostat -xz 1</li>
+<li>free -m</li>
+<li>sar -n DEV 1</li>
+<li>sar -n TCP,ETCP 1</li>
+<li>top</li>
+</ul>
+<p>몇몇의 커맨드들은 sysstat 패키지의 설치가 필요합니다.<br>이 커맨드들의 매트릭스는 당신이 <a href="http://www.brendangregg.com/usemethod.html" target="_blank" rel="external">USE Method</a>의 일부를 완성하는데 도움을 줄 것입니다.(성능 병목 현상을 찾기 위한 방법)<br>모든 리소스들(CPUs, memory, disks, e.t.c)의 utilization, saturation, and error metrics를 확인하는 것이 포함되어 있습니다.</p>
+<p>요약한 커맨드들을 간단하게 설명하겠습니다. 더 많은 정보를 원하시면 맨페이지를 확인하시기 바랍니다.</p>
+<h3 id="1-uptime"><a href="#1-uptime" class="headerlink" title="1. uptime"></a>1. uptime</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ uptime</div><div class="line"> 23:51:26 up 21:31,  1 user,  load average: 30.02, 26.43, 19.02</div></pre></td></tr></table></figure>
+<p>이 커맨드는 서버의 평균 부하를 빠르게 보는 방법입니다. 리눅스 시스템에서 프로세스들이 실행되기까기 대기하는 시간이지요.<br>이 숫자엔 CPU를 이용해야하는 프로세스들, DISK I/O를 발생시키는 프로세스들이 포함됩니다.<br>이 커맨드는 리소스 부하에 대한 정보를 제공하시만 다른 툴들 없이는 자세한 정보를 확인할 수 없습니다. 단순히 빠르게 파악할 수 있을 뿐이지요.</p>
+<p>3개의 숫자는 1분, 5분, 15분간의 평균적인 값입니다.<br>이 숫자들은 지나간 시간동안 어떻게 부하가 변경되었는지 파악할 수 있게 합니다.<br>예를 들어 당신이 문제가 있는 서버를 확인하였을때, 1분의 부하가 15분때의 부하보다 낮다면 당신은 이슈를 놓쳤다고 불 수 있습니다.</p>
+<p>부하의 평균 값은 최근 증가량을 보여주는 것입니다. 1분의 값이 30이고, 15분의 값이 19였을 경우 이 숫자들은 많은 의미를 포함하고 있습니다.<br>아마도 CPU를 많이 요구하고 있겠죠, vmstat 또는 mpstat을 확인해보아야 합니다.</p>
+<h3 id="2-dmesg-tail"><a href="#2-dmesg-tail" class="headerlink" title="2. dmesg | tail"></a>2. dmesg | tail</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ dmesg | tail</div><div class="line">[1880957.563150] perl invoked oom-killer: gfp_mask=0x280da, order=0, oom_score_adj=0</div><div class="line">[...]</div><div class="line">[1880957.563400] Out of memory: Kill process 18694 (perl) score 246 or sacrifice child</div><div class="line">[1880957.563408] Killed process 18694 (perl) total-vm:1972392kB, anon-rss:1953348kB, file-rss:0kB</div><div class="line">[2320864.954447] TCP: Possible SYN flooding on port 7001. Dropping request.  Check SNMP counters.</div></pre></td></tr></table></figure>
+<p>이 명령어는 최근 10개의 시스템 메세지를 보여줍니다, 에러와 야기된 퍼포먼스의 이슈를 확인 할 수 있습니다.<br>예제에 oom-killer와 TCP drop이 발생한것이 보이네요.</p>
+<p>이 스텝을 놓치지 마세요. dmesg는 항상 확인해야합니다.</p>
+<h3 id="3-vmstat-1"><a href="#3-vmstat-1" class="headerlink" title="3. vmstat 1"></a>3. vmstat 1</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ vmstat 1</div><div class="line">procs ---------memory---------- ---swap-- -----io---- -system-- ------cpu-----</div><div class="line"> r  b swpd   free   buff  cache   si   so    bi    bo   <span class="keyword">in</span>   cs us sy id wa st</div><div class="line">34  0    0 200889792  73708 591828    0    0     0     5    6   10 96  1  3  0  0</div><div class="line">32  0    0 200889920  73708 591860    0    0     0   592 13284 4282 98  1  1  0  0</div><div class="line">32  0    0 200890112  73708 591860    0    0     0     0 9501 2154 99  1  0  0  0</div><div class="line">32  0    0 200889568  73712 591856    0    0     0    48 11900 2459 99  0  0  0  0</div><div class="line">32  0    0 200890208  73712 591860    0    0     0     0 15898 4840 98  1  1  0  0</div></pre></td></tr></table></figure>
+<p>vmstat은 일반적으로 사용되는 툴입니다. (BSD에서 처음 만들어졌죠) 이것은 각 라인마다 통계치를 출력해줍니다.<br>vmstat에 argument를 1로 설정할 경우 1초마다의 평균 값을 출력합니다.</p>
+<p>해당 출력 된 컬럼을 확인해봅시다.</p>
+<ul>
+<li><strong>r</strong> : CPU에서 실행되는 프로세스의 값입니다. 이것은 CPU 포화 상태를 판단하는데 있어서 Load 정보보다 더 좋은 정보를 제공합니다. 디스크 I/O는 포함되지 않습니다.</li>
+<li><strong>free</strong> : Free 메모리 정보입니다.(kilobytes)</li>
+<li><strong>si,so</strong> : Swap in, Swap out 정보를 출력합니다. 만약 0이 아니면, Out of memory 상태인 것입니다.</li>
+<li><strong>us,sy,id,wa,st</strong> : 이것은 CPU 시간의 고장입니다? 모든 CPU들의 평균 값으로 각각 user time, system time (kernel), idle, wait I/O 그리고 stolen time을 표시합니다.</li>
+</ul>
+<p>System time은 I/O 프로세싱에 필수적입니다. 20%가 넘어가는 평균적인 시스템 시간은 아마도 커널이 현재 I/O 를 비효율적으로 사용한다는 것이겠죠.</p>
+<h3 id="4-mpstat-P-ALL-1"><a href="#4-mpstat-P-ALL-1" class="headerlink" title="4. mpstat -P ALL 1"></a>4. mpstat -P ALL 1</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ mpstat -P ALL 1</div><div class="line">Linux 3.13.0-49-generic (titanclusters-xxxxx)  07/14/2015  _x86_64_ (32 CPU)</div><div class="line">07:38:49 PM  CPU   %usr  %nice   %sys %iowait   %irq  %soft  %steal  %guest  %gnice  %idle</div><div class="line">07:38:50 PM  all  98.47   0.00   0.75    0.00   0.00   0.00    0.00    0.00    0.00   0.78</div><div class="line">07:38:50 PM    0  96.04   0.00   2.97    0.00   0.00   0.00    0.00    0.00    0.00   0.99</div><div class="line">07:38:50 PM    1  97.00   0.00   1.00    0.00   0.00   0.00    0.00    0.00    0.00   2.00</div><div class="line">07:38:50 PM    2  98.00   0.00   1.00    0.00   0.00   0.00    0.00    0.00    0.00   1.00</div><div class="line">07:38:50 PM    3  96.97   0.00   0.00    0.00   0.00   0.00    0.00    0.00    0.00   3.03</div><div class="line">[...]</div></pre></td></tr></table></figure>
+<p>이 커맨드는 CPU 시간을 표시해주며 우리는 상태의 불균형을 확인 할 수 있습니다.</p>
+<h3 id="5-pidstat-1"><a href="#5-pidstat-1" class="headerlink" title="5. pidstat 1"></a>5. pidstat 1</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ pidstat 1</div><div class="line">Linux 3.13.0-49-generic (titanclusters-xxxxx)  07/14/2015    _x86_64_    (32 CPU)</div><div class="line">07:41:02 PM   UID       PID    %usr %system  %guest    %CPU   CPU  Command</div><div class="line">07:41:03 PM     0         9    0.00    0.94    0.00    0.94     1  rcuos/0</div><div class="line">07:41:03 PM     0      4214    5.66    5.66    0.00   11.32    15  mesos-slave</div><div class="line">07:41:03 PM     0      4354    0.94    0.94    0.00    1.89     8  java</div><div class="line">07:41:03 PM     0      6521 1596.23    1.89    0.00 1598.11    27  java</div><div class="line">07:41:03 PM     0      6564 1571.70    7.55    0.00 1579.25    28  java</div><div class="line">07:41:03 PM 60004     60154    0.94    4.72    0.00    5.66     9  pidstat</div><div class="line">07:41:03 PM   UID       PID    %usr %system  %guest    %CPU   CPU  Command</div><div class="line">07:41:04 PM     0      4214    6.00    2.00    0.00    8.00    15  mesos-slave</div><div class="line">07:41:04 PM     0      6521 1590.00    1.00    0.00 1591.00    27  java</div><div class="line">07:41:04 PM     0      6564 1573.00   10.00    0.00 1583.00    28  java</div><div class="line">07:41:04 PM   108      6718    1.00    0.00    0.00    1.00     0  snmp-pass</div><div class="line">07:41:04 PM 60004     60154    1.00    4.00    0.00    5.00     9  pidstat</div></pre></td></tr></table></figure>
+<p>이 커맨더는 top과 비슷한 작은 요약본과 같습니다. 하지만 스크린을 초기화시키는 것이아니라 지속적으로 출력을 합니다. 이 것은 시간이 지나면서의 패턴 변화를 파악하는데 있어서 유용합니다. 또한 기록이 가능하지요.</p>
+<p>예제를 보면 2개의 자바 프로세스가 CPU의 부하를 유발하였습니다.</p>
+<h3 id="6-iostat-xz-1"><a href="#6-iostat-xz-1" class="headerlink" title="6. iostat -xz 1"></a>6. iostat -xz 1</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">$ iostat -xz 1</div><div class="line">Linux 3.13.0-49-generic (titanclusters-xxxxx)  07/14/2015  _x86_64_ (32 CPU)</div><div class="line">avg-cpu:  %user   %nice %system %iowait  %steal   %idle</div><div class="line">          73.96    0.00    3.73    0.03    0.06   22.21</div><div class="line">Device:   rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util</div><div class="line">xvda        0.00     0.23    0.21    0.18     4.52     2.08    34.37     0.00    9.98   13.80    5.42   2.44   0.09</div><div class="line">xvdb        0.01     0.00    1.02    8.94   127.97   598.53   145.79     0.00    0.43    1.78    0.28   0.25   0.25</div><div class="line">xvdc        0.01     0.00    1.02    8.86   127.79   595.94   146.50     0.00    0.45    1.82    0.30   0.27   0.26</div><div class="line">dm-0        0.00     0.00    0.69    2.32    10.47    31.69    28.01     0.01    3.23    0.71    3.98   0.13   0.04</div><div class="line">dm-1        0.00     0.00    0.00    0.94     0.01     3.78     8.00     0.33  345.84    0.04  346.81   0.01   0.00</div><div class="line">dm-2        0.00     0.00    0.09    0.07     1.35     0.36    22.50     0.00    2.55    0.23    5.62   1.78   0.03</div><div class="line">[...]</div></pre></td></tr></table></figure>
+<p>이 커맨드는 블록 디바이스(disks)를 이해하는데 매우 좋은 툴입니다. 작업 부하량과 결과 퍼포먼스를 함께 보여줍니다.</p>
+<ul>
+<li><strong>r/s, w/s, rkB/s, wkB/s</strong> : 각 디바이스의 read, writes, read Kbyes 그리고 write Kbytes 값을 초단위로 보여줍니다.</li>
+<li><strong>await</strong> : I/O의 평균값(milliseconds)을 보여줍니다. 이것은 어플리케이션의 시간을 표시하는데 큐에 적재된 시간과 대기시간도 포함되어 있습니다.</li>
+<li><strong>avgqu-sz</strong> : 디바이스 평균 요청 값을 보여줍니다. 1보다 큰 값은 포화 상태의 증거입니다.</li>
+<li><strong>%util</strong> : 디바이스 utilization입니다. 장치가 실행하고 있던 일의 두번째 시간을 보여줍니다. 60%이상의 값은 퍼포먼스가 낮은 상태임을 뜻합니다.</li>
+</ul>
+<h3 id="7-free-m"><a href="#7-free-m" class="headerlink" title="7. free -m"></a>7. free -m</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ free -m</div><div class="line">             total       used       free     shared    buffers     cached</div><div class="line">Mem:        245998      24545     221453         83         59        541</div><div class="line">-/+ buffers/cache:      23944     222053</div><div class="line">Swap:            0          0          0</div></pre></td></tr></table></figure>
+<p>2개의 컬럼을 보여줍니다.</p>
+<ul>
+<li><strong>buffers</strong> : buffer cache로 블록 디바이스 I/O 사용.</li>
+<li><strong>cached</strong> : page cache로 파일시스템에서의 사용.</li>
+</ul>
+<p>“-/+ buffers/cache”는 free 메모리 와 사용량에 대한 작은 혼란을 야기합니다. 리눅스는 캐싱된 free memory를 사용합니다. 하지만 어플리케이션이 필요로 할때 빠르게 반환할 수 있습니다. 그렇기에 캐싱된 메모리는 free memory 에 포함된다고 생각하면 됩니다.<br>자세한 내용은 <a href="http://www.linuxatemyram.com/" target="_blank" rel="external">linuxatemyram</a>을 확인하시기 바랍니다.</p>
+<p>리눅스에서 ZFS를 사용할 경우 추가로 혼란을 야기합니다. ZFS는 자신의 파일 시스템 캐시를 free -m 컬럼에 반영하지 않습니다. 따라서 이것은 low memory로 보일 수 있습니다. 실제로는 정상이지만요 (표시가 되지 않으니)</p>
+<h3 id="8-sar-n-DEV-1"><a href="#8-sar-n-DEV-1" class="headerlink" title="8. sar -n DEV 1"></a>8. sar -n DEV 1</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">$ sar -n DEV 1</div><div class="line">Linux 3.13.0-49-generic (titanclusters-xxxxx)  07/14/2015     _x86_64_    (32 CPU)</div><div class="line">12:16:48 AM     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s   %ifutil</div><div class="line">12:16:49 AM      eth0  18763.00   5032.00  20686.42    478.30      0.00      0.00      0.00      0.00</div><div class="line">12:16:49 AM        lo     14.00     14.00      1.36      1.36      0.00      0.00      0.00      0.00</div><div class="line">12:16:49 AM   docker0      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00</div><div class="line">12:16:49 AM     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s   %ifutil</div><div class="line">12:16:50 AM      eth0  19763.00   5101.00  21999.10    482.56      0.00      0.00      0.00      0.00</div><div class="line">12:16:50 AM        lo     20.00     20.00      3.25      3.25      0.00      0.00      0.00      0.00</div><div class="line">12:16:50 AM   docker0      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00</div></pre></td></tr></table></figure>
+<p>네트워크 인터페이스 처리량을 확인합니다.</p>
+<h3 id="9-sar-n-TCP-ETCP-1"><a href="#9-sar-n-TCP-ETCP-1" class="headerlink" title="9. sar -n TCP,ETCP 1"></a>9. sar -n TCP,ETCP 1</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">$ sar -n TCP,ETCP 1</div><div class="line">Linux 3.13.0-49-generic (titanclusters-xxxxx)  07/14/2015    _x86_64_    (32 CPU)</div><div class="line">12:17:19 AM  active/s passive/s    iseg/s    oseg/s</div><div class="line">12:17:20 AM      1.00      0.00  10233.00  18846.0</div><div class="line">12:17:19 AM  atmptf/s  estres/s retrans/s isegerr/s   orsts/s</div><div class="line">12:17:20 AM      0.00      0.00      0.00      0.00      0.00</div><div class="line">12:17:20 AM  active/s passive/s    iseg/s    oseg/s</div><div class="line">12:17:21 AM      1.00      0.00   8359.00   6039.00</div><div class="line">12:17:20 AM  atmptf/s  estres/s retrans/s isegerr/s   orsts/s</div><div class="line">12:17:21 AM      0.00      0.00      0.00      0.00      0.00</div></pre></td></tr></table></figure>
+<p>TCP 메트릭스를 간략하게 보여줍니다.</p>
+<ul>
+<li><strong>active/s</strong> : 내부에서 시작된 TCP 커넥션/s 입니다. (e.g., via conneect())</li>
+<li><strong>passive/s</strong> : 외부에서 시작된 TCP 커넥션/s 입니다. (e.g., via accept())</li>
+<li><strong>retrans/s</strong> : TCP 재송신/s</li>
+</ul>
+<h3 id="10-top"><a href="#10-top" class="headerlink" title="10. top"></a>10. top</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">$ top</div><div class="line">top - 21:19:52 up 217 days,  2:55, 22 users,  load average: 3.67, 2.53, 2.22</div><div class="line">Tasks: 451 total,   1 running, 450 sleeping,   0 stopped,   0 zombie</div><div class="line">Cpu(s): 10.5%us,  3.8%sy,  0.0%ni, 85.1%id,  0.6%wa,  0.0%hi,  0.1%si,  0.0%st</div><div class="line">Mem:  16331432k total, 16149524k used,   181908k free,     5088k buffers</div><div class="line">Swap:  4194300k total,  4194300k used,        0k free,    74892k cached</div><div class="line">  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND</div><div class="line">   39 root      20   0     0    0    0 S  1.9  0.0  16:34.02 events/4</div><div class="line">   99 root      20   0     0    0    0 D  1.9  0.0  81:43.73 kswapd0</div><div class="line">14607 nobody    20   0  189m  13m 4532 D  1.9  0.1   0:00.16 sendtg_sshwatch</div><div class="line">15167 root      20   0 17348 1448  848 R  1.9  0.0   0:00.01 top</div><div class="line">25259 root      20   0  410m 7672  620 S  1.9  0.0 937:26.13 rsyslogd</div></pre></td></tr></table></figure>
+<p>오늘은 여기까지입니다.</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/se/" rel="tag"># se</a>
+          
+            <a href="/tags/uptime/" rel="tag"># uptime</a>
+          
+            <a href="/tags/dmesg/" rel="tag"># dmesg</a>
+          
+            <a href="/tags/vmstat/" rel="tag"># vmstat</a>
+          
+            <a href="/tags/mpstat/" rel="tag"># mpstat</a>
+          
+            <a href="/tags/pidstat/" rel="tag"># pidstat</a>
+          
+            <a href="/tags/iostat/" rel="tag"># iostat</a>
+          
+            <a href="/tags/free/" rel="tag"># free</a>
+          
+            <a href="/tags/sar/" rel="tag"># sar</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/04/runit/" rel="next" title="runit">
+                <i class="fa fa-chevron-left"></i> runit
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/04/SSL-Convert/" rel="prev" title="SSL Convert">
+                SSL Convert <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Yoan" />
+          <p class="site-author-name" itemprop="name">Yoan</p>
+           
+              <p class="site-description motion-element" itemprop="description">Grit</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/crosoie" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/crosoie" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#첫번째-1분-summary"><span class="nav-number">1.</span> <span class="nav-text">첫번째 1분: summary</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-uptime"><span class="nav-number">2.</span> <span class="nav-text">1. uptime</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-dmesg-tail"><span class="nav-number">3.</span> <span class="nav-text">2. dmesg | tail</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-vmstat-1"><span class="nav-number">4.</span> <span class="nav-text">3. vmstat 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-mpstat-P-ALL-1"><span class="nav-number">5.</span> <span class="nav-text">4. mpstat -P ALL 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-pidstat-1"><span class="nav-number">6.</span> <span class="nav-text">5. pidstat 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-iostat-xz-1"><span class="nav-number">7.</span> <span class="nav-text">6. iostat -xz 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-free-m"><span class="nav-number">8.</span> <span class="nav-text">7. free -m</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-sar-n-DEV-1"><span class="nav-number">9.</span> <span class="nav-text">8. sar -n DEV 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-sar-n-TCP-ETCP-1"><span class="nav-number">10.</span> <span class="nav-text">9. sar -n TCP,ETCP 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-top"><span class="nav-number">11.</span> <span class="nav-text">10. top</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yoan</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
