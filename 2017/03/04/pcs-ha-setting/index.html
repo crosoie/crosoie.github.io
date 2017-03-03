@@ -1,0 +1,856 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="linux, pcs, pacemaker, corosync, HA, drbd, SE," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="pcs: pacemaker/corosync 설정,관리 시스템
+
+pacemaker: 고가용성 클러스터 리소스 관리자 (고장을 인지한 경우 대기장비로 서비스를 넘깁니다.- failover)corosync: 그룹커뮤니케이션 시스템을 구현하기 위한 HA기능 API 제공 (node status)
+
+pcs를 이용하여 두대의 서버를 하나의 클러스터로 묶어 HA를 구현합">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PCS를 이용한 HA구성">
+<meta property="og:url" content="http://yoanp.github.io/2017/03/04/pcs-ha-setting/index.html">
+<meta property="og:site_name" content="Yoanp">
+<meta property="og:description" content="pcs: pacemaker/corosync 설정,관리 시스템
+
+pacemaker: 고가용성 클러스터 리소스 관리자 (고장을 인지한 경우 대기장비로 서비스를 넘깁니다.- failover)corosync: 그룹커뮤니케이션 시스템을 구현하기 위한 HA기능 API 제공 (node status)
+
+pcs를 이용하여 두대의 서버를 하나의 클러스터로 묶어 HA를 구현합">
+<meta property="og:updated_time" content="2017-03-03T16:41:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PCS를 이용한 HA구성">
+<meta name="twitter:description" content="pcs: pacemaker/corosync 설정,관리 시스템
+
+pacemaker: 고가용성 클러스터 리소스 관리자 (고장을 인지한 경우 대기장비로 서비스를 넘깁니다.- failover)corosync: 그룹커뮤니케이션 시스템을 구현하기 위한 HA기능 API 제공 (node status)
+
+pcs를 이용하여 두대의 서버를 하나의 클러스터로 묶어 HA를 구현합">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoanp.github.io/2017/03/04/pcs-ha-setting/"/>
+
+
+
+
+
+  <title> PCS를 이용한 HA구성 | Yoanp </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-54005049-4', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yoanp</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">My Blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoanp.github.io/2017/03/04/pcs-ha-setting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yoan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yoanp">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                PCS를 이용한 HA구성
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-04T00:15:23+09:00">
+                2017-03-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/03/04/pcs-ha-setting/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/04/pcs-ha-setting/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><code>pcs</code>: pacemaker/corosync 설정,관리 시스템</p>
+<blockquote>
+<p><code>pacemaker</code>: 고가용성 클러스터 리소스 관리자 (고장을 인지한 경우 대기장비로 서비스를 넘깁니다.- failover)<br><code>corosync</code>: 그룹커뮤니케이션 시스템을 구현하기 위한 HA기능 API 제공 (node status)</p>
+</blockquote>
+<p>pcs를 이용하여 두대의 서버를 하나의 클러스터로 묶어 HA를 구현합니다.<br>마스터 서버 장애시 스탠바이 장비가 마스터로 승계됩니다.<br>두대 서버 모두 동일한 데이터를 유지하고 있어야 하기 때문에 이 문서에서는 단순 동기화 방식이 아닌 <code>drbd</code>를 구성 할 예정입니다.</p>
+<blockquote>
+<p><code>drbd</code>: HA 클러스터를 위해 디자인 된 네트워크 블럭 디바이스</p>
+</blockquote>
+<h1 id="기본-정보"><a href="#기본-정보" class="headerlink" title="기본 정보"></a>기본 정보</h1><blockquote>
+<p>CentOS 7.3<br>pcs-0.9.152-10<br>pacemaker-1.1<br>corosync-2.4</p>
+</blockquote>
+<h1 id="기본-설정"><a href="#기본-설정" class="headerlink" title="기본 설정"></a>기본 설정</h1><h2 id="호스트-설정"><a href="#호스트-설정" class="headerlink" title="호스트 설정"></a>호스트 설정</h2><blockquote>
+<p>두서버 모두 적용 해 주세요.</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># cat /etc/hosts</span></div><div class="line">127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4</div><div class="line">::1         localhost localhost.localdomain localhost6 localhost6.localdomain6</div><div class="line"></div><div class="line">10.0.0.3 master</div><div class="line">10.0.0.4 standby</div></pre></td></tr></table></figure>
+<h2 id="방화벽-설정"><a href="#방화벽-설정" class="headerlink" title="방화벽 설정"></a>방화벽 설정</h2><p>두서버가 서로 통신이 되어야 합니다.<br>저는 내부망을 ALL로 열었어요…</p>
+<h1 id="DRBD"><a href="#DRBD" class="headerlink" title="DRBD"></a>DRBD</h1><h2 id="패키지-설치"><a href="#패키지-설치" class="headerlink" title="패키지 설치"></a>패키지 설치</h2><p>DRBD 패키지를 설치해줍니다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># cd /usr/local/src</span></div><div class="line">root <span class="comment"># wget http://elrepo.reloumirrors.net/elrepo/el7/x86_64/RPMS/elrepo-release-7.0-2.el7.elrepo.noarch.rpm</span></div><div class="line">root <span class="comment"># rpm -ivh elrepo-release-7.0-2.el7.elrepo.noarch.rpm</span></div><div class="line">root <span class="comment"># yum -y install drbd kmod-drbd84 kernel-devel</span></div></pre></td></tr></table></figure>
+<h2 id="DRBD-설정"><a href="#DRBD-설정" class="headerlink" title="DRBD 설정"></a>DRBD 설정</h2><blockquote>
+<p>global 설정 파일에서 18~20줄 주석을 해제합니다.</p>
+</blockquote>
+<h3 id="리소스-파일을-생성합니다"><a href="#리소스-파일을-생성합니다" class="headerlink" title="리소스 파일을 생성합니다"></a>리소스 파일을 생성합니다</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># vi /etc/drbd.d/storage.res</span></div><div class="line">resource <span class="string">"storage"</span> &#123;</div><div class="line">     protocol C;</div><div class="line">     startup &#123;</div><div class="line">          wfc-timeout       0;      <span class="comment">## Infinite!</span></div><div class="line">          degr-wfc-timeout  120;    <span class="comment">## 2 minutes.</span></div><div class="line">     &#125;</div><div class="line">     disk &#123;</div><div class="line">        on-io-error detach;</div><div class="line">        resync-rate 300M;</div><div class="line">     &#125;</div><div class="line">    net &#123;</div><div class="line">        timeout             60;     <span class="comment">#  6 seconds  (unit = 0.1 seconds)</span></div><div class="line">        connect-int         10;     <span class="comment"># 10 seconds  (unit = 1 second)</span></div><div class="line">        ping-int            10;     <span class="comment"># 10 seconds  (unit = 1 second)</span></div><div class="line">        max-buffers         20000;</div><div class="line">        unplug-watermark    20000;</div><div class="line">        max-epoch-size      20000;</div><div class="line">    &#125;</div><div class="line">     <span class="comment"># It is valid to move device, disk and meta-disk to the</span></div><div class="line">     <span class="comment"># resource level.</span></div><div class="line">    on master &#123;</div><div class="line">        device /dev/drbd0;</div><div class="line">        disk /dev/sda5;</div><div class="line">        address 10.0.0.3:7789;</div><div class="line">        meta-disk internal;</div><div class="line">    &#125;</div><div class="line">    on standby &#123;</div><div class="line">        device /dev/drbd0;</div><div class="line">        disk /dev/sda5;</div><div class="line">        address 10.0.0.3:7789;</div><div class="line">        meta-disk internal;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="DRBD-리소스-생성"><a href="#DRBD-리소스-생성" class="headerlink" title="DRBD 리소스 생성"></a>DRBD 리소스 생성</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># drbdadm create-md storage</span></div><div class="line">initializing activity <span class="built_in">log</span></div><div class="line">NOT initializing bitmap</div><div class="line">Writing meta data...</div><div class="line">New drbd meta data block successfully created.</div></pre></td></tr></table></figure>
+<h2 id="DRBD-구동-및-동기화"><a href="#DRBD-구동-및-동기화" class="headerlink" title="DRBD 구동 및 동기화"></a>DRBD 구동 및 동기화</h2><p>실행!</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># systemctl start drbd</span></div></pre></td></tr></table></figure>
+<h2 id="데이터-동기화를-합니다"><a href="#데이터-동기화를-합니다" class="headerlink" title="데이터 동기화를 합니다"></a>데이터 동기화를 합니다</h2><blockquote>
+<p>MASTER에서 실행합니다.</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># drbdadm -- --overwrite-data-of-peer primary storage</span></div></pre></td></tr></table></figure>
+<h1 id="HA-구성"><a href="#HA-구성" class="headerlink" title="HA 구성"></a>HA 구성</h1><h2 id="패키지-설치-1"><a href="#패키지-설치-1" class="headerlink" title="패키지 설치"></a>패키지 설치</h2><blockquote>
+<p>두서버 모두 적용 해 주세요.</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install -y corosync pacemaker pcs resource-agents</div></pre></td></tr></table></figure>
+<h2 id="pcsd-실행"><a href="#pcsd-실행" class="headerlink" title="pcsd 실행"></a>pcsd 실행</h2><blockquote>
+<p>두서버 모두 적용 해 주세요.</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">systemctl start pcsd.service</div><div class="line">systemctl <span class="built_in">enable</span> pcsd.service</div><div class="line">systemctl <span class="built_in">enable</span> corosync.service</div><div class="line">systemctl <span class="built_in">enable</span> pacemaker.service</div></pre></td></tr></table></figure>
+<h2 id="인증-계정-적용"><a href="#인증-계정-적용" class="headerlink" title="인증 계정 적용"></a>인증 계정 적용</h2><p>해당 인증 계정 설정을 통하여 한대의 서버에서 클러스터를 생성할 경우 모든 서버에 반영이 됩니다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># passwd hacluster</span></div><div class="line">hacluster 사용자의 비밀 번호 변경 중</div><div class="line">새  암호 :</div><div class="line">root <span class="comment"># pcs cluster auth master</span></div><div class="line">Username: hacluster</div><div class="line">Password: ********************</div><div class="line">root <span class="comment"># pcs cluster auth standby</span></div><div class="line">Username: hacluster</div><div class="line">Password: ********************</div></pre></td></tr></table></figure>
+<p>정상적으로 인증되었는지 확인합니다</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># pcs cluster auth master standby</span></div><div class="line">master: Already authorized</div><div class="line">standby: Already authorized</div></pre></td></tr></table></figure>
+<h2 id="클러스터-구성"><a href="#클러스터-구성" class="headerlink" title="클러스터 구성"></a>클러스터 구성</h2><p><code>FileCluster</code>란 이름의 클러스터를 생성합니다.<br>해당 클러스터엔 master/standby 두대의 서버가 포함됩니다.<br>데이터 전송은 UDP통신을 사용하도록 설정하였습니다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># pcs cluster setup --start --name FileCluster master standby --transport udpu</span></div></pre></td></tr></table></figure>
+<p>프로퍼티 설정을 추가로 진행합니다.</p>
+<p><code>STONITH</code>: (Shoot The Head in The Head) 가짜 노드 혹은 의도치 않은 동시 엑세스로 인한 데이터 손상을 보호합니다.<br><code>no-quorum-policy</code>: 클러스터에 quorum이 없을 때의 수행작업을 설정합니다.<br><code>resource-stickiness</code>: 서비스 지속력</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># pcs property set stonith-enabled=false</span></div><div class="line">root <span class="comment"># pcs property set no-quorum-policy=ignore</span></div><div class="line">root <span class="comment"># pcs property set default-resource-stickiness=100</span></div></pre></td></tr></table></figure>
+<p>정상적으로 구성되었는지 확인합니다</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># pcs status</span></div><div class="line">Cluster name: FileCluster</div><div class="line">Stack: corosync</div><div class="line">Current DC: master (version 1.1.15-11.el7_3.2<span class="_">-e</span>174ec8) - partition with quorum</div><div class="line">Last updated: Fri Mar  3 14:47:29 2017		Last change: Fri Mar  3 23:27:16 2017 by hacluster via crmd on master</div><div class="line"> </div><div class="line">2 nodes and 0 resources configured</div><div class="line"> </div><div class="line">Online: [ master standby ]</div><div class="line"> </div><div class="line">No resources</div><div class="line"> </div><div class="line"> </div><div class="line">Daemon Status:</div><div class="line">  corosync: active/disabled</div><div class="line">  pacemaker: active/disabled</div><div class="line">  pcsd: active/enabled</div></pre></td></tr></table></figure>
+<h2 id="리소스-생성"><a href="#리소스-생성" class="headerlink" title="리소스 생성"></a>리소스 생성</h2><p>failover 설정이 포함되도록 리소스를 생성합니다.</p>
+<p>우선 리소스 에이전트의 종류는 아래와 같습니다.</p>
+<h3 id="Heartbeat-Resource-Agents"><a href="#Heartbeat-Resource-Agents" class="headerlink" title="Heartbeat Resource Agents"></a>Heartbeat Resource Agents</h3><p>예전에 사용하던 LSB방식의 init 스크립트를 뜻합니다.</p>
+<h3 id="LSB-Resource-Agents"><a href="#LSB-Resource-Agents" class="headerlink" title="LSB Resource Agents"></a>LSB Resource Agents</h3><p><code>/etc/init.d</code> 아래에 존재하는 스크립트입니다. 기본적으로 OS/배포판에서 제공합니다.<br>하지만 <a href="http://refspecs.linux-foundation.org/LSB_3.2.0/LSB-Core-generic/LSB-Core-generic/iniscrptact.html" target="_blank" rel="external">LSB 스펙</a>을 준수해야 합니다.</p>
+<p>LSB 스펙을 준수하여 직접 스크립트를 만들어 사용할 수 있습니다.</p>
+<h3 id="OCF-Resource-Agents"><a href="#OCF-Resource-Agents" class="headerlink" title="OCF Resource Agents"></a>OCF Resource Agents</h3><p>기본적으로 제공하는 LSB 익스텐션입니다.<br>아래 경로에서 기본 스크립트를 확인 할 수 있습니다.<br><code>/lib/ocf/resource.d/heartbeat</code></p>
+<p>저는 Apache를 웹서버로 사용 할 예정입니다.<br>따라서 아래 설정에는 drbd, apache가 각자 ocf,lsb를 이용하여 구동되도록 설정되어있습니다.</p>
+<p>CIB(Cluster Information Base) 라고 불리는 Raw xml에 우선 설정을 저장 후 업데이트하는 방식으로 진행합니다.</p>
+<blockquote>
+<p>you want to edit the saved CIB using pcs (pcs -f <command>)</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># pcs cluster cib drbd_cfg</span></div><div class="line">root <span class="comment"># pcs -f drbd_cfg resource create Data ocf:linbit:drbd drbd_resource=Storage  op monitor timeout="30" interval="20" role="Slave" op monitor timeout="30" interval="10" role="Master"</span></div><div class="line">root <span class="comment"># pcs -f drbd_cfg resource master DataSync Data master-max=1 master-node-max=1 clone-max=2 clone-node-max=1 notify=true</span></div><div class="line">root <span class="comment"># pcs -f drbd_cfg resource create Storage Filesystem device="/dev/drbd0" directory="/data" fstype="xfs"</span></div><div class="line">root <span class="comment"># pcs -f drbd_cfg resource create internal_ip ocf:heartbeat:IPaddr2 ip=10.0.0.5 cidr_netmask=32 op monitor timeout="30" interval="20" role="Slave" op monitor timeout="30" interval="10" role="Master"</span></div><div class="line">root <span class="comment"># pcs -f drbd_cfg resource create external_ip ocf:heartbeat:IPaddr2 ip=1.1.1.5 cidr_netmask=32 op monitor timeout="30" interval="20" role="Slave" op monitor timeout="30" interval="10" role="Master"</span></div><div class="line">root <span class="comment"># pcs -f drbd_cfg resource create apache lsb:apache op monitor interval=30s</span></div><div class="line"> </div><div class="line">root <span class="comment"># pcs -f drbd_cfg resource group add HA-GROUP internal_ip external_ip Storage apache</span></div><div class="line">root <span class="comment"># pcs -f drbd_cfg constraint colocation add HA-GROUP DataSync INFINITY with-rsc-role=Master</span></div><div class="line">root <span class="comment"># pcs -f drbd_cfg constraint order promote DataSync then start Storage</span></div><div class="line"> </div><div class="line">root <span class="comment"># pcs cluster cib-push drbd_cfg</span></div><div class="line">CIB updated</div><div class="line"> </div><div class="line">root <span class="comment"># pcs resource create ping_check ocf:pacemaker:ping host_list="10.0.0.1" multiplier="1000" dampen=10s op monitor interval=5s</span></div><div class="line">root <span class="comment"># pcs resource clone ping_check globally-unique=false</span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>2개의 아이피를 설정하였기 때문에 ping_check를 하는 리소스를 추가로 설정하였습니다.(주기적으로 게이트웨이에 핑을 날리게 됩니다.)</p>
+</blockquote>
+<h2 id="클러스터-구성-확인"><a href="#클러스터-구성-확인" class="headerlink" title="클러스터 구성 확인"></a>클러스터 구성 확인</h2><p><code>pcs status</code> 명령어를 통해 현재 노드의 상태, 리소스 리스트, 데몬상태를 모두 확인 할 수 있습니다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># pcs status</span></div><div class="line">Cluster name: FileCluster</div><div class="line">Stack: corosync</div><div class="line">Current DC: master (version 1.1.15-11.el7_3.2<span class="_">-e</span>174ec8) - partition with quorum</div><div class="line">Last updated: Sat Mar  4 00:05:29 2017		Last change: Fri Mar  3 22:20:13 2017 by root via cibadmin on master</div><div class="line"> </div><div class="line">2 nodes and 8 resources configured</div><div class="line"> </div><div class="line">Online: [ master standby ]</div><div class="line"> </div><div class="line">Full list of resources:</div><div class="line"> </div><div class="line"> Master/Slave Set: DataSync [Data]</div><div class="line">     Masters: [ master ]</div><div class="line">     Slaves: [ standby ]</div><div class="line"> Resource Group: HA-GROUP</div><div class="line">     internal_ip	(ocf::heartbeat:IPaddr2):	Started master</div><div class="line">     external_ip	(ocf::heartbeat:IPaddr2):	Started master</div><div class="line">     Storage	(ocf::heartbeat:Filesystem):	Started master</div><div class="line">     apache	(lsb:apache):	Started master</div><div class="line"> Clone Set: ping_check-clone [ping_check]</div><div class="line">     Started: [ master standby ]</div><div class="line"> </div><div class="line">Daemon Status:</div><div class="line">  corosync: active/disabled</div><div class="line">  pacemaker: active/disabled</div><div class="line">  pcsd: active/enabled</div></pre></td></tr></table></figure>
+<h1 id="그-외-소소한-팁"><a href="#그-외-소소한-팁" class="headerlink" title="그 외 소소한 팁"></a>그 외 소소한 팁</h1><h2 id="PCS-설정-삭제"><a href="#PCS-설정-삭제" class="headerlink" title="PCS 설정 삭제"></a>PCS 설정 삭제</h2><p>설정을 잘못할때가 있죠.. 새로운 마음으로 다시 시작할 때 아래와 같이 사용합니다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># pcs cluster stop --all</span></div><div class="line">root <span class="comment"># pcs cluster destroy --all</span></div></pre></td></tr></table></figure>
+<h2 id="PCS-cluster-standby-설정-on-off"><a href="#PCS-cluster-standby-설정-on-off" class="headerlink" title="PCS cluster standby 설정 (on/off)"></a>PCS cluster standby 설정 (on/off)</h2><p>장애테스느는 아래와 같이 하시면 됩니다.<br>standby 로 설정하면 해당 노드의 상태가 Online에서 standby로 되며 서비스에서 빠집니다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">root <span class="comment"># pcs cluster standby $CLUSTER_NAME</span></div><div class="line">root <span class="comment"># pcs cluster unstandby $CLUSTER_NAME</span></div></pre></td></tr></table></figure>
+<h2 id="Linux-HA-manual-pages"><a href="#Linux-HA-manual-pages" class="headerlink" title="Linux-HA manual pages"></a>Linux-HA manual pages</h2><p><a href="http://linux-ha.org/doc/man-pages/man-pages.html" target="_blank" rel="external">영어를 잘하신다면 읽고 전체 번역을 부탁드려도 될까요</a></p>
+<h2 id="PCS-APACHE-SETTTING"><a href="#PCS-APACHE-SETTTING" class="headerlink" title="PCS APACHE SETTTING"></a>PCS APACHE SETTTING</h2><p>전 lsb로 올렸지만(init.d/apache를 직접만들었어요) 기본적으로 제공하는 OCF를 사용하시는 것 또한 방법입니다.</p>
+<p><a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-an-apache-active-passive-cluster-using-pacemaker-on-centos-7" target="_blank" rel="external">LINK1</a><br><a href="http://linux-ha.org/doc/man-pages/re-ra-apache.html" target="_blank" rel="external">LINK2</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">pcs resource create apache ocf:heartbeat:apache \</div><div class="line">configfile=/etc/httpd/conf/httpd.conf \</div><div class="line">statusurl=<span class="string">"http://localhost/server-status"</span> \</div><div class="line">op monitor timeout=<span class="string">"20s"</span> interval=<span class="string">"10"</span></div></pre></td></tr></table></figure>
+<h2 id="Logging"><a href="#Logging" class="headerlink" title="Logging"></a>Logging</h2><p>아래 로그를 보는건 기본이죠? :-)</p>
+<p><code>/var/log/cluster/corosync.log</code><br><code>/var/log/pcsd/pcsd.log</code><br><code>/var/log/pacemaker.log</code></p>
+<h2 id="crm-mon"><a href="#crm-mon" class="headerlink" title="crm_mon"></a>crm_mon</h2><p>Pacemaker 클러스터 리소스 매니저의 한 부분..</p>
+<p><code>pcs status</code>를 여러번 입력하긴 힘들기 때문에 전 사용합니다.</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux-pcs-pacemaker-corosync-ha-drbd-se/" rel="tag"># linux, pcs, pacemaker, corosync, HA, drbd, SE</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/23/dicrect-lvs mode for docker/" rel="next" title="direct-lvm mode for docker">
+                <i class="fa fa-chevron-left"></i> direct-lvm mode for docker
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Yoan" />
+          <p class="site-author-name" itemprop="name">Yoan</p>
+           
+              <p class="site-description motion-element" itemprop="description">Grit</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/crosoie" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/crosoie" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#기본-정보"><span class="nav-number">1.</span> <span class="nav-text">기본 정보</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#기본-설정"><span class="nav-number">2.</span> <span class="nav-text">기본 설정</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#호스트-설정"><span class="nav-number">2.1.</span> <span class="nav-text">호스트 설정</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#방화벽-설정"><span class="nav-number">2.2.</span> <span class="nav-text">방화벽 설정</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DRBD"><span class="nav-number">3.</span> <span class="nav-text">DRBD</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#패키지-설치"><span class="nav-number">3.1.</span> <span class="nav-text">패키지 설치</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DRBD-설정"><span class="nav-number">3.2.</span> <span class="nav-text">DRBD 설정</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#리소스-파일을-생성합니다"><span class="nav-number">3.2.1.</span> <span class="nav-text">리소스 파일을 생성합니다</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DRBD-리소스-생성"><span class="nav-number">3.3.</span> <span class="nav-text">DRBD 리소스 생성</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DRBD-구동-및-동기화"><span class="nav-number">3.4.</span> <span class="nav-text">DRBD 구동 및 동기화</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#데이터-동기화를-합니다"><span class="nav-number">3.5.</span> <span class="nav-text">데이터 동기화를 합니다</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HA-구성"><span class="nav-number">4.</span> <span class="nav-text">HA 구성</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#패키지-설치-1"><span class="nav-number">4.1.</span> <span class="nav-text">패키지 설치</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pcsd-실행"><span class="nav-number">4.2.</span> <span class="nav-text">pcsd 실행</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#인증-계정-적용"><span class="nav-number">4.3.</span> <span class="nav-text">인증 계정 적용</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#클러스터-구성"><span class="nav-number">4.4.</span> <span class="nav-text">클러스터 구성</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#리소스-생성"><span class="nav-number">4.5.</span> <span class="nav-text">리소스 생성</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Heartbeat-Resource-Agents"><span class="nav-number">4.5.1.</span> <span class="nav-text">Heartbeat Resource Agents</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LSB-Resource-Agents"><span class="nav-number">4.5.2.</span> <span class="nav-text">LSB Resource Agents</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OCF-Resource-Agents"><span class="nav-number">4.5.3.</span> <span class="nav-text">OCF Resource Agents</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#클러스터-구성-확인"><span class="nav-number">4.6.</span> <span class="nav-text">클러스터 구성 확인</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#그-외-소소한-팁"><span class="nav-number">5.</span> <span class="nav-text">그 외 소소한 팁</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PCS-설정-삭제"><span class="nav-number">5.1.</span> <span class="nav-text">PCS 설정 삭제</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PCS-cluster-standby-설정-on-off"><span class="nav-number">5.2.</span> <span class="nav-text">PCS cluster standby 설정 (on/off)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux-HA-manual-pages"><span class="nav-number">5.3.</span> <span class="nav-text">Linux-HA manual pages</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PCS-APACHE-SETTTING"><span class="nav-number">5.4.</span> <span class="nav-text">PCS APACHE SETTTING</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Logging"><span class="nav-number">5.5.</span> <span class="nav-text">Logging</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#crm-mon"><span class="nav-number">5.6.</span> <span class="nav-text">crm_mon</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yoan</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'yoanp';
+      var disqus_identifier = '2017/03/04/pcs-ha-setting/';
+
+      var disqus_title = "PCS를 이용한 HA구성";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
