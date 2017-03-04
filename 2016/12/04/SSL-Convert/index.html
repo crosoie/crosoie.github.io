@@ -88,24 +88,18 @@
 
 
 <meta name="description" content="CRT 파일을 PFX로 변환Key 파일, Crt 파일, Chain 파일을 PFX 파일로 합체시켜보겠습니다.
-1openssl pkcs12 -export -out server.pfx -inkey server.key -in server.crt -certfile server_CHAIN.crt
-
-PFX에서 KEY 뽑아내기12openssl pkcs12 -in ser">
+1openssl pkcs12 -export -out server.pfx -inkey server.key -in server.crt -certfile server_CHAIN.crt">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SSL Convert">
 <meta property="og:url" content="http://yoanp.github.io/2016/12/04/SSL-Convert/index.html">
-<meta property="og:site_name" content="Yoanp">
+<meta property="og:site_name" content="yoanp">
 <meta property="og:description" content="CRT 파일을 PFX로 변환Key 파일, Crt 파일, Chain 파일을 PFX 파일로 합체시켜보겠습니다.
-1openssl pkcs12 -export -out server.pfx -inkey server.key -in server.crt -certfile server_CHAIN.crt
-
-PFX에서 KEY 뽑아내기12openssl pkcs12 -in ser">
-<meta property="og:updated_time" content="2017-03-02T12:13:34.000Z">
+1openssl pkcs12 -export -out server.pfx -inkey server.key -in server.crt -certfile server_CHAIN.crt">
+<meta property="og:updated_time" content="2017-03-04T04:00:57.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SSL Convert">
 <meta name="twitter:description" content="CRT 파일을 PFX로 변환Key 파일, Crt 파일, Chain 파일을 PFX 파일로 합체시켜보겠습니다.
-1openssl pkcs12 -export -out server.pfx -inkey server.key -in server.crt -certfile server_CHAIN.crt
-
-PFX에서 KEY 뽑아내기12openssl pkcs12 -in ser">
+1openssl pkcs12 -export -out server.pfx -inkey server.key -in server.crt -certfile server_CHAIN.crt">
 
 
 
@@ -139,7 +133,7 @@ PFX에서 KEY 뽑아내기12openssl pkcs12 -in ser">
 
 
 
-  <title> SSL Convert | Yoanp </title>
+  <title> SSL Convert | yoanp </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -184,12 +178,12 @@ PFX에서 KEY 뽑아내기12openssl pkcs12 -in ser">
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Yoanp</span>
+        <span class="site-title">yoanp</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
       
-        <p class="site-subtitle">My Blog</p>
+        <p class="site-subtitle"></p>
       
   </div>
 
@@ -296,7 +290,7 @@ PFX에서 KEY 뽑아내기12openssl pkcs12 -in ser">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yoanp">
+      <meta itemprop="name" content="yoanp">
     </span>
 
     
@@ -392,14 +386,13 @@ PFX에서 KEY 뽑아내기12openssl pkcs12 -in ser">
 
       
         <hr>
-<h4 id="CRT-파일을-PFX로-변환"><a href="#CRT-파일을-PFX로-변환" class="headerlink" title="CRT 파일을 PFX로 변환"></a>CRT 파일을 PFX로 변환</h4><p>Key 파일, Crt 파일, Chain 파일을 PFX 파일로 합체시켜보겠습니다.</p>
+<h2 id="CRT-파일을-PFX로-변환"><a href="#CRT-파일을-PFX로-변환" class="headerlink" title="CRT 파일을 PFX로 변환"></a>CRT 파일을 PFX로 변환</h2><p>Key 파일, Crt 파일, Chain 파일을 PFX 파일로 합체시켜보겠습니다.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">openssl pkcs12 -export -out server.pfx -inkey server.key -in server.crt -certfile server_CHAIN.crt</div></pre></td></tr></table></figure>
-<hr>
-<h4 id="PFX에서-KEY-뽑아내기"><a href="#PFX에서-KEY-뽑아내기" class="headerlink" title="PFX에서 KEY 뽑아내기"></a>PFX에서 KEY 뽑아내기</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">openssl pkcs12 -in server.pfx -nocerts -passin pass:<span class="string">'PASSWORD'</span> -nodes -out server.key</div><div class="line">sed -ni <span class="_">-e</span> <span class="string">'/^-----BEGIN/,/-----END/p'</span> server.key</div></pre></td></tr></table></figure>
-<h4 id="PFX에서-인증서-crt-뽑아내기"><a href="#PFX에서-인증서-crt-뽑아내기" class="headerlink" title="PFX에서 인증서(crt) 뽑아내기"></a>PFX에서 인증서(crt) 뽑아내기</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">openssl pkcs12 -in server.pfx -clcerts -nokeys -passin pass:<span class="string">'PASSWORD'</span> -out server.crt</div><div class="line">sed -ni <span class="_">-e</span> <span class="string">'/^-----BEGIN/,/-----END/p'</span> server.crt</div></pre></td></tr></table></figure>
-<h4 id="PFX에서-체인인증서-뽑아내기"><a href="#PFX에서-체인인증서-뽑아내기" class="headerlink" title="PFX에서 체인인증서 뽑아내기"></a>PFX에서 체인인증서 뽑아내기</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">openssl pkcs12 -in server.pfx -cacerts -nokeys -passin pass:<span class="string">'PASSWORD'</span> -out server_CHAIN.crt</div><div class="line">sed -ni <span class="_">-e</span> <span class="string">'/^-----BEGIN/,/-----END/p'</span> server_CHAIN.crt</div></pre></td></tr></table></figure>
-<hr>
-<h4 id="key-파일의-패스워드-제거"><a href="#key-파일의-패스워드-제거" class="headerlink" title="key 파일의 패스워드 제거"></a>key 파일의 패스워드 제거</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">/usr/bin/openssl rsa -in server.key -out nopass.key</div><div class="line">Enter pass phrase <span class="keyword">for</span> server.key: xxxx</div><div class="line">writing RSA key</div><div class="line">mv  server.key server_pass.key</div><div class="line">mv nopass.key server.key</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="PFX에서-KEY-뽑아내기"><a href="#PFX에서-KEY-뽑아내기" class="headerlink" title="PFX에서 KEY 뽑아내기"></a>PFX에서 KEY 뽑아내기</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">openssl pkcs12 -in server.pfx -nocerts -passin pass:<span class="string">'PASSWORD'</span> -nodes -out server.key</div><div class="line">sed -ni <span class="_">-e</span> <span class="string">'/^-----BEGIN/,/-----END/p'</span> server.key</div></pre></td></tr></table></figure>
+<h2 id="PFX에서-인증서-crt-뽑아내기"><a href="#PFX에서-인증서-crt-뽑아내기" class="headerlink" title="PFX에서 인증서(crt) 뽑아내기"></a>PFX에서 인증서(crt) 뽑아내기</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">openssl pkcs12 -in server.pfx -clcerts -nokeys -passin pass:<span class="string">'PASSWORD'</span> -out server.crt</div><div class="line">sed -ni <span class="_">-e</span> <span class="string">'/^-----BEGIN/,/-----END/p'</span> server.crt</div></pre></td></tr></table></figure>
+<h2 id="PFX에서-체인인증서-뽑아내기"><a href="#PFX에서-체인인증서-뽑아내기" class="headerlink" title="PFX에서 체인인증서 뽑아내기"></a>PFX에서 체인인증서 뽑아내기</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">openssl pkcs12 -in server.pfx -cacerts -nokeys -passin pass:<span class="string">'PASSWORD'</span> -out server_CHAIN.crt</div><div class="line">sed -ni <span class="_">-e</span> <span class="string">'/^-----BEGIN/,/-----END/p'</span> server_CHAIN.crt</div></pre></td></tr></table></figure>
+<h2 id="key-파일의-패스워드-제거"><a href="#key-파일의-패스워드-제거" class="headerlink" title="key 파일의 패스워드 제거"></a>key 파일의 패스워드 제거</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">/usr/bin/openssl rsa -in server.key -out nopass.key</div><div class="line">Enter pass phrase <span class="keyword">for</span> server.key: xxxx</div><div class="line">writing RSA key</div><div class="line">mv  server.key server_pass.key</div><div class="line">mv nopass.key server.key</div></pre></td></tr></table></figure>
 <p>오늘 포스트는 여기까지 입니다.</p>
 
       
@@ -613,7 +606,7 @@ PFX에서 KEY 뽑아내기12openssl pkcs12 -in ser">
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#CRT-파일을-PFX로-변환"><span class="nav-number">1.</span> <span class="nav-text">CRT 파일을 PFX로 변환</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PFX에서-KEY-뽑아내기"><span class="nav-number">2.</span> <span class="nav-text">PFX에서 KEY 뽑아내기</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PFX에서-인증서-crt-뽑아내기"><span class="nav-number">3.</span> <span class="nav-text">PFX에서 인증서(crt) 뽑아내기</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PFX에서-체인인증서-뽑아내기"><span class="nav-number">4.</span> <span class="nav-text">PFX에서 체인인증서 뽑아내기</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#key-파일의-패스워드-제거"><span class="nav-number">5.</span> <span class="nav-text">key 파일의 패스워드 제거</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CRT-파일을-PFX로-변환"><span class="nav-number">1.</span> <span class="nav-text">CRT 파일을 PFX로 변환</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PFX에서-KEY-뽑아내기"><span class="nav-number">2.</span> <span class="nav-text">PFX에서 KEY 뽑아내기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PFX에서-인증서-crt-뽑아내기"><span class="nav-number">3.</span> <span class="nav-text">PFX에서 인증서(crt) 뽑아내기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PFX에서-체인인증서-뽑아내기"><span class="nav-number">4.</span> <span class="nav-text">PFX에서 체인인증서 뽑아내기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#key-파일의-패스워드-제거"><span class="nav-number">5.</span> <span class="nav-text">key 파일의 패스워드 제거</span></a></li></ol></div>
             
 
           </div>

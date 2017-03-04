@@ -95,13 +95,13 @@ pcs를 이용하여 두대의 서버를 하나의 클러스터로 묶어 HA를 �
 <meta property="og:type" content="article">
 <meta property="og:title" content="PCS를 이용한 HA구성">
 <meta property="og:url" content="http://yoanp.github.io/2017/03/04/pcs-ha-setting/index.html">
-<meta property="og:site_name" content="Yoanp">
+<meta property="og:site_name" content="yoanp">
 <meta property="og:description" content="pcs: pacemaker/corosync 설정,관리 시스템
 
 pacemaker: 고가용성 클러스터 리소스 관리자 (고장을 인지한 경우 대기장비로 서비스를 넘깁니다.- failover)corosync: 그룹커뮤니케이션 시스템을 구현하기 위한 HA기능 API 제공 (node status)
 
 pcs를 이용하여 두대의 서버를 하나의 클러스터로 묶어 HA를 구현합">
-<meta property="og:updated_time" content="2017-03-04T02:19:42.000Z">
+<meta property="og:updated_time" content="2017-03-04T03:58:46.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PCS를 이용한 HA구성">
 <meta name="twitter:description" content="pcs: pacemaker/corosync 설정,관리 시스템
@@ -142,7 +142,7 @@ pcs를 이용하여 두대의 서버를 하나의 클러스터로 묶어 HA를 �
 
 
 
-  <title> PCS를 이용한 HA구성 | Yoanp </title>
+  <title> PCS를 이용한 HA구성 | yoanp </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -187,12 +187,12 @@ pcs를 이용하여 두대의 서버를 하나의 클러스터로 묶어 HA를 �
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Yoanp</span>
+        <span class="site-title">yoanp</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
       
-        <p class="site-subtitle">My Blog</p>
+        <p class="site-subtitle"></p>
       
   </div>
 
@@ -299,7 +299,7 @@ pcs를 이용하여 두대의 서버를 하나의 클러스터로 묶어 HA를 �
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yoanp">
+      <meta itemprop="name" content="yoanp">
     </span>
 
     
@@ -399,6 +399,7 @@ pcs를 이용하여 두대의 서버를 하나의 클러스터로 묶어 HA를 �
 <p><code>pacemaker</code>: 고가용성 클러스터 리소스 관리자 (고장을 인지한 경우 대기장비로 서비스를 넘깁니다.- failover)<br><code>corosync</code>: 그룹커뮤니케이션 시스템을 구현하기 위한 HA기능 API 제공 (node status)</p>
 </blockquote>
 <p>pcs를 이용하여 두대의 서버를 하나의 클러스터로 묶어 HA를 구현합니다.<br>마스터 서버 장애시 스탠바이 장비가 마스터로 승계됩니다.<br>두대 서버 모두 동일한 데이터를 유지하고 있어야 하기 때문에 이 문서에서는 단순 동기화 방식이 아닌 <code>drbd</code>를 구성 할 예정입니다.</p>
+<a id="more"></a>
 <blockquote>
 <p><code>drbd</code>: HA 클러스터를 위해 디자인 된 네트워크 블럭 디바이스</p>
 </blockquote>

@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="linux,se,uptime,dmesg,vmstat,mpstat,pidstat,iostat,free,sar," />
+  <meta name="keywords" content="linux,uptime,dmesg,vmstat,mpstat,pidstat,iostat,free,sar,SE," />
 
 
 
@@ -87,22 +87,16 @@
 
 
 
-<meta name="description" content="넷플릭스 테크 블로그에 올라온 포스트를 번역하였습니다.시스템 엔지니어로써 기본적으로 알아야하는 명령어들입니다.리마인드 겸 제 입맛에 맞게 해석-작성되었으니.. 참고해주시면 감사하겠습니다.
-당신은 서버의 퍼포먼스 이슈가 발생하여 서버에 로그인 하였을 때 1분 동안 확인 하는 것이 무엇입니까?
-우리(넷플릭스)는 거대한 EC2 리눅스 클라우드를 가지고 있으며,">
+<meta name="description" content="넷플릭스 테크 블로그에 올라온 포스트를 번역하였습니다.시스템 엔지니어로써 기본적으로 알아야하는 명령어들입니다.리마인드 겸 제 입맛에 맞게 해석-작성되었으니.. 참고해주시면 감사하겠습니다.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux Perfomance Analysis">
 <meta property="og:url" content="http://yoanp.github.io/2016/12/04/Linux-Perfomance-Analysis/index.html">
-<meta property="og:site_name" content="Yoanp">
-<meta property="og:description" content="넷플릭스 테크 블로그에 올라온 포스트를 번역하였습니다.시스템 엔지니어로써 기본적으로 알아야하는 명령어들입니다.리마인드 겸 제 입맛에 맞게 해석-작성되었으니.. 참고해주시면 감사하겠습니다.
-당신은 서버의 퍼포먼스 이슈가 발생하여 서버에 로그인 하였을 때 1분 동안 확인 하는 것이 무엇입니까?
-우리(넷플릭스)는 거대한 EC2 리눅스 클라우드를 가지고 있으며,">
-<meta property="og:updated_time" content="2017-03-02T12:20:38.000Z">
+<meta property="og:site_name" content="yoanp">
+<meta property="og:description" content="넷플릭스 테크 블로그에 올라온 포스트를 번역하였습니다.시스템 엔지니어로써 기본적으로 알아야하는 명령어들입니다.리마인드 겸 제 입맛에 맞게 해석-작성되었으니.. 참고해주시면 감사하겠습니다.">
+<meta property="og:updated_time" content="2017-03-04T03:58:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux Perfomance Analysis">
-<meta name="twitter:description" content="넷플릭스 테크 블로그에 올라온 포스트를 번역하였습니다.시스템 엔지니어로써 기본적으로 알아야하는 명령어들입니다.리마인드 겸 제 입맛에 맞게 해석-작성되었으니.. 참고해주시면 감사하겠습니다.
-당신은 서버의 퍼포먼스 이슈가 발생하여 서버에 로그인 하였을 때 1분 동안 확인 하는 것이 무엇입니까?
-우리(넷플릭스)는 거대한 EC2 리눅스 클라우드를 가지고 있으며,">
+<meta name="twitter:description" content="넷플릭스 테크 블로그에 올라온 포스트를 번역하였습니다.시스템 엔지니어로써 기본적으로 알아야하는 명령어들입니다.리마인드 겸 제 입맛에 맞게 해석-작성되었으니.. 참고해주시면 감사하겠습니다.">
 
 
 
@@ -136,7 +130,7 @@
 
 
 
-  <title> Linux Perfomance Analysis | Yoanp </title>
+  <title> Linux Perfomance Analysis | yoanp </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -181,12 +175,12 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Yoanp</span>
+        <span class="site-title">yoanp</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
       
-        <p class="site-subtitle">My Blog</p>
+        <p class="site-subtitle"></p>
       
   </div>
 
@@ -293,7 +287,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yoanp">
+      <meta itemprop="name" content="yoanp">
     </span>
 
     
@@ -389,6 +383,7 @@
 
       
         <p>넷플릭스 테크 블로그에 올라온 <a href="http://techblog.netflix.com/2015/11/linux-performance-analysis-in-60s.html?m=1" target="_blank" rel="external">포스트</a>를 번역하였습니다.<br>시스템 엔지니어로써 기본적으로 알아야하는 명령어들입니다.<br>리마인드 겸 제 입맛에 맞게 해석-작성되었으니.. 참고해주시면 감사하겠습니다.</p>
+<a id="more"></a>
 <p>당신은 서버의 퍼포먼스 이슈가 발생하여 서버에 로그인 하였을 때 1분 동안 확인 하는 것이 무엇입니까?</p>
 <p>우리(넷플릭스)는 거대한 EC2 리눅스 클라우드를 가지고 있으며, 다수의 퍼포먼스 분석 툴을 이용한 모니터링 및 퍼포먼스에 대한 연구를 진행하고 있습니다.</p>
 <p>그 툴들에는 <a href="http://techblog.netflix.com/2014/12/introducing-atlas-netflixs-primary.html" target="_blank" rel="external">Atlas</a> 와 <a href="http://techblog.netflix.com/2015/04/introducing-vector-netflixs-on-host.html" target="_blank" rel="external">Vector</a> 가 포함되어 있지요. 이러한 도구들은 대부분의 이슈를 해결하는데 도움이 되지만, 때때로 인스턴스에 접근하여 기존의 보편적인 리눅스 퍼포먼스 툴을 사용해야 하는 일들이 생깁니다.</p>
@@ -483,8 +478,6 @@
           
             <a href="/tags/linux/" rel="tag"># linux</a>
           
-            <a href="/tags/se/" rel="tag"># se</a>
-          
             <a href="/tags/uptime/" rel="tag"># uptime</a>
           
             <a href="/tags/dmesg/" rel="tag"># dmesg</a>
@@ -500,6 +493,8 @@
             <a href="/tags/free/" rel="tag"># free</a>
           
             <a href="/tags/sar/" rel="tag"># sar</a>
+          
+            <a href="/tags/se/" rel="tag"># SE</a>
           
         </div>
       

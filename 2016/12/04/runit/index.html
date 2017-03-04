@@ -88,39 +88,18 @@
 
 
 <meta name="description" content="runit이란, 유닉스 크로스 플랫폼에서 작동하는 서비스 관리 프로그램 입니다.비슷한 종류로는 init, launchdm, systemd 등이 있습니다.
-구동되는 플랫폼은 아래와 같지요.
-
-GNU/Linux
-*BSD
-MacOSX
-Solaris
-
-서비스들이 runsv 의 child process로 실행이 되며, 관리를 받게 됩니다.(runsv : 서비스 데몬">
+구동되는 플랫폼은 아래와 같지요.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="runit">
 <meta property="og:url" content="http://yoanp.github.io/2016/12/04/runit/index.html">
-<meta property="og:site_name" content="Yoanp">
+<meta property="og:site_name" content="yoanp">
 <meta property="og:description" content="runit이란, 유닉스 크로스 플랫폼에서 작동하는 서비스 관리 프로그램 입니다.비슷한 종류로는 init, launchdm, systemd 등이 있습니다.
-구동되는 플랫폼은 아래와 같지요.
-
-GNU/Linux
-*BSD
-MacOSX
-Solaris
-
-서비스들이 runsv 의 child process로 실행이 되며, 관리를 받게 됩니다.(runsv : 서비스 데몬">
-<meta property="og:updated_time" content="2017-03-02T12:15:11.000Z">
+구동되는 플랫폼은 아래와 같지요.">
+<meta property="og:updated_time" content="2017-03-04T04:00:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="runit">
 <meta name="twitter:description" content="runit이란, 유닉스 크로스 플랫폼에서 작동하는 서비스 관리 프로그램 입니다.비슷한 종류로는 init, launchdm, systemd 등이 있습니다.
-구동되는 플랫폼은 아래와 같지요.
-
-GNU/Linux
-*BSD
-MacOSX
-Solaris
-
-서비스들이 runsv 의 child process로 실행이 되며, 관리를 받게 됩니다.(runsv : 서비스 데몬">
+구동되는 플랫폼은 아래와 같지요.">
 
 
 
@@ -154,7 +133,7 @@ Solaris
 
 
 
-  <title> runit | Yoanp </title>
+  <title> runit | yoanp </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -199,12 +178,12 @@ Solaris
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Yoanp</span>
+        <span class="site-title">yoanp</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
       
-        <p class="site-subtitle">My Blog</p>
+        <p class="site-subtitle"></p>
       
   </div>
 
@@ -311,7 +290,7 @@ Solaris
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yoanp">
+      <meta itemprop="name" content="yoanp">
     </span>
 
     
@@ -408,26 +387,25 @@ Solaris
       
         <p>runit이란, 유닉스 크로스 플랫폼에서 작동하는 서비스 관리 프로그램 입니다.<br>비슷한 종류로는 init, launchdm, systemd 등이 있습니다.</p>
 <p>구동되는 플랫폼은 아래와 같지요.</p>
+<a id="more"></a>
 <ul>
-<li>GNU/Linux</li>
+<li>GNU,Linux</li>
 <li>*BSD</li>
 <li>MacOSX</li>
 <li>Solaris</li>
 </ul>
 <p>서비스들이 runsv 의 child process로 실행이 되며, 관리를 받게 됩니다.<br>(runsv : 서비스 데몬의 신호, 서비스 컨트롤 및 관리를 담당.)<br>또한 sv를 이용하여 모니터링 되고 있는 서비스들을 관리 할 수 있습니다.</p>
 <p>저는 runit을 1번 프로세스로 사용하지 않고(systemd를 사용하지요) 특정 프로세스의 감시 툴로써 nginx를 모니터링 하고 auto restart처리를 할 예정입니다.<br>runsvdir은 service 디렉토리를 감시하고 해당 프로세스를 관리합니다.</p>
-<hr>
-<h3 id="자-설치해봅시다"><a href="#자-설치해봅시다" class="headerlink" title="자 설치해봅시다 :-)"></a>자 설치해봅시다 :-)</h3><blockquote>
+<blockquote>
 <p>기본 조건 : Centos7, <a href="https://packagecloud.io/imeyer/runit/install" target="_blank" rel="external">RPM설치</a></p>
 </blockquote>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># quick install</span></div><div class="line">curl <span class="_">-s</span> https://packagecloud.io/install/repositories/imeyer/runit/script.rpm.sh | bash</div><div class="line">yum install runit -y</div></pre></td></tr></table></figure>
-<hr>
-<h5 id="nginx-run-파일-생성"><a href="#nginx-run-파일-생성" class="headerlink" title="nginx run 파일 생성"></a>nginx run 파일 생성</h5><p>runsvdir이 해당 프로세스를 run파일을 실행시키는 것으로 처리합니다.<br>제가 사용하는 run 파일을 보시지요.</p>
+<h2 id="nginx-run-파일-생성"><a href="#nginx-run-파일-생성" class="headerlink" title="nginx run 파일 생성"></a>nginx run 파일 생성</h2><p>runsvdir이 해당 프로세스를 run파일을 실행시키는 것으로 처리합니다.<br>제가 사용하는 run 파일을 보시지요.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">cat /usr/<span class="built_in">local</span>/nginx/run</div><div class="line"><span class="meta">#!/bin/sh</span></div><div class="line"><span class="built_in">exec</span> /usr/<span class="built_in">local</span>/nginx/sbin/nginx -c /usr/<span class="built_in">local</span>/nginx/conf/nginx.conf 2&gt;&amp;1</div></pre></td></tr></table></figure>
-<h5 id="경로-연결"><a href="#경로-연결" class="headerlink" title="경로 연결"></a>경로 연결</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /etc/service</div><div class="line">ln <span class="_">-s</span> /usr/<span class="built_in">local</span>/nginx .</div></pre></td></tr></table></figure>
-<h5 id="확인"><a href="#확인" class="headerlink" title="확인"></a>확인</h5><p>프로세스가 정상적으로 구동되었음이 확인 됩니다.</p>
+<h2 id="경로-연결"><a href="#경로-연결" class="headerlink" title="경로 연결"></a>경로 연결</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /etc/service</div><div class="line">ln <span class="_">-s</span> /usr/<span class="built_in">local</span>/nginx .</div></pre></td></tr></table></figure>
+<h2 id="확인"><a href="#확인" class="headerlink" title="확인"></a>확인</h2><p>프로세스가 정상적으로 구동되었음이 확인 됩니다.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">pstree | grep runsv</div><div class="line">  |-runsvdir---runsv---nginx---13*[nginx]</div></pre></td></tr></table></figure>
-<h5 id="sv-명령어"><a href="#sv-명령어" class="headerlink" title="sv 명령어"></a>sv 명령어</h5><p>man 페이지를 보면 자세히 나옵니다만, 우선 대표적인 옵션을 봅시다.</p>
+<h2 id="sv-명령어"><a href="#sv-명령어" class="headerlink" title="sv 명령어"></a>sv 명령어</h2><p>man 페이지를 보면 자세히 나옵니다만, 우선 대표적인 옵션을 봅시다.</p>
 <ul>
 <li>status : 서비스의 현재 상태를 보여줍니다.</li>
 <li>up (start) : 서비스를 구동시킵니다.</li>
@@ -435,8 +413,7 @@ Solaris
 <li>reload : HUP</li>
 </ul>
 <p>오늘 포스트는 여기까지 입니다.</p>
-<hr>
-<h4 id="참고"><a href="#참고" class="headerlink" title="참고"></a>참고</h4><p><a href="http://smarden.org/runit" target="_blank" rel="external">공식홈페이지</a><br><a href="https://en.wikipedia.org/wiki/Runit" target="_blank" rel="external">Wikipedia</a></p>
+<h2 id="참고"><a href="#참고" class="headerlink" title="참고"></a>참고</h2><p><a href="http://smarden.org/runit" target="_blank" rel="external">공식홈페이지</a><br><a href="https://en.wikipedia.org/wiki/Runit" target="_blank" rel="external">Wikipedia</a></p>
 
       
     </div>
@@ -641,7 +618,7 @@ Solaris
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#자-설치해봅시다"><span class="nav-number">1.</span> <span class="nav-text">자 설치해봅시다 :-)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#nginx-run-파일-생성"><span class="nav-number">1.0.1.</span> <span class="nav-text">nginx run 파일 생성</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#경로-연결"><span class="nav-number">1.0.2.</span> <span class="nav-text">경로 연결</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#확인"><span class="nav-number">1.0.3.</span> <span class="nav-text">확인</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#sv-명령어"><span class="nav-number">1.0.4.</span> <span class="nav-text">sv 명령어</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#참고"><span class="nav-number">1.1.</span> <span class="nav-text">참고</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx-run-파일-생성"><span class="nav-number">1.</span> <span class="nav-text">nginx run 파일 생성</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#경로-연결"><span class="nav-number">2.</span> <span class="nav-text">경로 연결</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#확인"><span class="nav-number">3.</span> <span class="nav-text">확인</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sv-명령어"><span class="nav-number">4.</span> <span class="nav-text">sv 명령어</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#참고"><span class="nav-number">5.</span> <span class="nav-text">참고</span></a></li></ol></div>
             
 
           </div>
