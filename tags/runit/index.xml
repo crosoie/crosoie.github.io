@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>runit on Yoanp</title>
-    <link>http://yoanp.github.io/tags/runit/</link>
+    <link>https://yoanp.github.io/tags/runit/</link>
     <description>Recent content in runit on Yoanp</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 04 Dec 2016 00:07:31 +0900</lastBuildDate>
     
-	<atom:link href="http://yoanp.github.io/tags/runit/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://yoanp.github.io/tags/runit/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>runit</title>
-      <link>http://yoanp.github.io/blog/runit/</link>
+      <link>https://yoanp.github.io/blog/runit/</link>
       <pubDate>Sun, 04 Dec 2016 00:07:31 +0900</pubDate>
       
-      <guid>http://yoanp.github.io/blog/runit/</guid>
+      <guid>https://yoanp.github.io/blog/runit/</guid>
       <description>runit이란, 유닉스 크로스 플랫폼에서 작동하는 서비스 관리 프로그램 입니다.
 비슷한 종류로는 init, launchdm, systemd 등이 있습니다.
 구동되는 플랫폼은 아래와 같지요.

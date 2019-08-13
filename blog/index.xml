@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Blog on Yoanp</title>
-    <link>http://yoanp.github.io/blog/</link>
+    <link>https://yoanp.github.io/blog/</link>
     <description>Recent content in Blog on Yoanp</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 05 Jun 2017 22:24:26 +0900</lastBuildDate>
     
-	<atom:link href="http://yoanp.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://yoanp.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>CAP 원리</title>
-      <link>http://yoanp.github.io/blog/cap-%EC%9B%90%EB%A6%AC/</link>
+      <link>https://yoanp.github.io/blog/cap-%EC%9B%90%EB%A6%AC/</link>
       <pubDate>Mon, 05 Jun 2017 22:24:26 +0900</pubDate>
       
-      <guid>http://yoanp.github.io/blog/cap-%EC%9B%90%EB%A6%AC/</guid>
+      <guid>https://yoanp.github.io/blog/cap-%EC%9B%90%EB%A6%AC/</guid>
       <description>클라우드 시스템을 관리하는 기술책을 읽으며 개인적으로 정리하는 내용입니다.
 CAP Consistency, Availability, Partition resistance를 뜻한다.
 CAP 원리 일관성과 가용성, 그리고 분리에 대한 저항을 모두 보장하는 분산 시스템을 구축하는 것은 불가능 하다는 것이 CAP 원리이다. 둘중 임의의 하나, 둘은 달성 할 수 잇지만 셋을 동시에 달성 할 수 없다. 따라서 시스템을 사용할 때에 무엇이 보장되고 무엇이 보장되지 않는지를 반드시 확인해야 한다.
@@ -25,10 +25,10 @@ CAP 원리 일관성과 가용성, 그리고 분리에 대한 저항을 모두 �
     
     <item>
       <title>PCS를 이용한 HA구성</title>
-      <link>http://yoanp.github.io/blog/pcs%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-ha%EA%B5%AC%EC%84%B1/</link>
+      <link>https://yoanp.github.io/blog/pcs%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-ha%EA%B5%AC%EC%84%B1/</link>
       <pubDate>Sat, 04 Mar 2017 13:45:07 +0900</pubDate>
       
-      <guid>http://yoanp.github.io/blog/pcs%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-ha%EA%B5%AC%EC%84%B1/</guid>
+      <guid>https://yoanp.github.io/blog/pcs%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-ha%EA%B5%AC%EC%84%B1/</guid>
       <description>pcs: pacemaker/corosync 설정,관리 시스템
  pacemaker: 고가용성 클러스터 리소스 관리자 (고장을 인지한 경우 대기장비로 서비스를 넘깁니다.- failover)
 corosync: 그룹커뮤니케이션 시스템을 구현하기 위한 HA기능 API 제공 (node status)
@@ -40,10 +40,10 @@ corosync: 그룹커뮤니케이션 시스템을 구현하기 위한 HA기능 API
     
     <item>
       <title>direct-lvm mode for docker</title>
-      <link>http://yoanp.github.io/blog/direct-lvm-mode-for-docker/</link>
+      <link>https://yoanp.github.io/blog/direct-lvm-mode-for-docker/</link>
       <pubDate>Thu, 23 Feb 2017 22:40:37 +0900</pubDate>
       
-      <guid>http://yoanp.github.io/blog/direct-lvm-mode-for-docker/</guid>
+      <guid>https://yoanp.github.io/blog/direct-lvm-mode-for-docker/</guid>
       <description>Docker는 ubuntu를 기반으로 개발되었습니다.
 그렇기 떄문에 도커의 기본적인 파일 스토리지 시스템은 AUFS입니다.
 문제는 AUFS는 레드헷 개열에서 지원하지 않는 파일시스템이지요.
@@ -53,10 +53,10 @@ corosync: 그룹커뮤니케이션 시스템을 구현하기 위한 HA기능 API
     
     <item>
       <title>Docker 1.13 Release</title>
-      <link>http://yoanp.github.io/blog/docker-1.13-release/</link>
+      <link>https://yoanp.github.io/blog/docker-1.13-release/</link>
       <pubDate>Fri, 20 Jan 2017 22:19:09 +0900</pubDate>
       
-      <guid>http://yoanp.github.io/blog/docker-1.13-release/</guid>
+      <guid>https://yoanp.github.io/blog/docker-1.13-release/</guid>
       <description>1월 19일날 발표 된 docker 1.13의 특징을 소개하는 글 입니다. 도커 공식 블로그을 참고하였습니다.
 root # docker --version Docker version 1.13.0, build 49bf474  특히 도커 swarm mode가 1.12에 소개되었는데 해당 기능에 대한 기능개선과 변경사항이 생겼습니다.
 compose로 swarm mode 서비스를 배포 할 수 있습니다 docker stack deploy란 명령어를 통해 compose 파일을 지원합니다. 구축 및 서비스 관리가 편해지겠습니다.
@@ -66,10 +66,10 @@ Error response from daemon: client is newer than server  이젠 그렇지 않다
     
     <item>
       <title>Docker swarm</title>
-      <link>http://yoanp.github.io/blog/docker-swarm/</link>
+      <link>https://yoanp.github.io/blog/docker-swarm/</link>
       <pubDate>Sun, 04 Dec 2016 16:20:06 +0900</pubDate>
       
-      <guid>http://yoanp.github.io/blog/docker-swarm/</guid>
+      <guid>https://yoanp.github.io/blog/docker-swarm/</guid>
       <description>docker swarm 도커 1.9 버전에서 베타 딱지를 붙인 채 세상에 나왔던 Swarm은 2016년 7월에 도커 1.12버전 릴리즈때 베타 딱지를 떼고 도커 엔진에 포함 된 채로 새롭게 나왔습니다. (물론 기존의 Swarm 또한 지원 합니다.)
 도커 엔진 자체에 포함 된 만큼 여러가지 변화가 생겼습니다.
  도커 엔진 자체에 포함 도커 엔진에서 swarm mode를 on/off 가능 오버레이 네트워크와 swarm mode의 연계 (외부 키값 저장소가 필요하지 않아짐) native remote api, cli supported  도커사에서 공식적으로 말하고 있는 swarm의 특징은 아래와 같습니다.</description>
@@ -77,20 +77,20 @@ Error response from daemon: client is newer than server  이젠 그렇지 않다
     
     <item>
       <title>SSL convert</title>
-      <link>http://yoanp.github.io/blog/ssl-convert/</link>
+      <link>https://yoanp.github.io/blog/ssl-convert/</link>
       <pubDate>Sun, 04 Dec 2016 16:17:20 +0900</pubDate>
       
-      <guid>http://yoanp.github.io/blog/ssl-convert/</guid>
+      <guid>https://yoanp.github.io/blog/ssl-convert/</guid>
       <description>CRT 파일을 PFX로 변환 Key 파일, Crt 파일, Chain 파일을 PFX 파일로 합체시켜보겠습니다.
 openssl pkcs12 -export -out server.pfx -inkey server.key -in server.crt -certfile server_CHAIN.crt  PFX에서 키 뽑아내기 PFX에서 KEY 뽑아내기 openssl pkcs12 -in server.pfx -nocerts -passin pass:&#39;PASSWORD&#39; -nodes -out server.key sed -ni -e &#39;/^-----BEGIN/,/-----END/p&#39; server.key  PFX에서 인증서(crt) 뽑아내기 openssl pkcs12 -in server.pfx -clcerts -nokeys -passin pass:&#39;PASSWORD&#39; -out server.crt sed -ni -e &#39;/^-----BEGIN/,/-----END/p&#39; server.crt  PFX에서 체인인증서 뽑아내기 openssl pkcs12 -in server.</description>
     </item>
     
     <item>
       <title>Linux Performance Analysis</title>
-      <link>http://yoanp.github.io/blog/linux-performance-analysis/</link>
+      <link>https://yoanp.github.io/blog/linux-performance-analysis/</link>
       <pubDate>Sun, 04 Dec 2016 16:14:34 +0900</pubDate>
       
-      <guid>http://yoanp.github.io/blog/linux-performance-analysis/</guid>
+      <guid>https://yoanp.github.io/blog/linux-performance-analysis/</guid>
       <description>넷플릭스 테크 블로그에 올라온 포스트를 번역하였습니다. 시스템 엔지니어로써 기본적으로 알아야하는 명령어들입니다. 리마인드 겸 제 입맛에 맞게 해석-작성되었으니.. 참고해주시면 감사하겠습니다.
 당신은 서버의 퍼포먼스 이슈가 발생하여 서버에 로그인 하였을 때 1분 동안 확인 하는 것이 무엇입니까?
 우리(넷플릭스)는 거대한 EC2 리눅스 클라우드를 가지고 있으며, 다수의 퍼포먼스 분석 툴을 이용한 모니터링 및 퍼포먼스에 대한 연구를 진행하고 있습니다.
@@ -99,10 +99,10 @@ openssl pkcs12 -export -out server.pfx -inkey server.key -in server.crt -certfil
     
     <item>
       <title>runit</title>
-      <link>http://yoanp.github.io/blog/runit/</link>
+      <link>https://yoanp.github.io/blog/runit/</link>
       <pubDate>Sun, 04 Dec 2016 00:07:31 +0900</pubDate>
       
-      <guid>http://yoanp.github.io/blog/runit/</guid>
+      <guid>https://yoanp.github.io/blog/runit/</guid>
       <description>runit이란, 유닉스 크로스 플랫폼에서 작동하는 서비스 관리 프로그램 입니다.
 비슷한 종류로는 init, launchdm, systemd 등이 있습니다.
 구동되는 플랫폼은 아래와 같지요.

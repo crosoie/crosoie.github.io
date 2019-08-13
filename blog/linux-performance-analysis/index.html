@@ -20,7 +20,7 @@
 우리(넷플릭스)는 거대한 EC2 리눅스 클라우드를 가지고 있으며, 다수의 퍼포먼스 분석 툴을 이용한 모니터링 및 퍼포먼스에 대한 연구를 진행하고 있습니다.
 그 툴들에는 Atlas 와 Vector 가 포함되어 있지요. 이러한 도구들은 대부분의 이슈를 해결하는데 도움이 되지만, 때때로 인스턴스에 접근하여 기존의 보편적인 리눅스 퍼포먼스 툴을 사용해야 하는 일들이 생깁니다." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://yoanp.github.io/blog/linux-performance-analysis/" />
+<meta property="og:url" content="https://yoanp.github.io/blog/linux-performance-analysis/" />
 <meta property="article:published_time" content="2016-12-04T16:14:34+09:00" />
 <meta property="article:modified_time" content="2016-12-04T16:14:34+09:00" />
 
@@ -31,7 +31,7 @@
      Linux Performance Analysis 
 
 </title>
-<link rel="canonical" href="http://yoanp.github.io/blog/linux-performance-analysis/">
+<link rel="canonical" href="https://yoanp.github.io/blog/linux-performance-analysis/">
 
 
 
@@ -49,11 +49,11 @@
 
 
     
-    <link rel="stylesheet" href="http://yoanp.github.io/css/reset.css?t=2019-08-13%2014%3a32%3a57.656286%20%2b0900%20KST%20m%3d%2b0.070678212">
-    <link rel="stylesheet" href="http://yoanp.github.io/css/pygments.css?t=2019-08-13%2014%3a32%3a57.656286%20%2b0900%20KST%20m%3d%2b0.070678212">
-    <link rel="stylesheet" href="http://yoanp.github.io/css/main.css?t=2019-08-13%2014%3a32%3a57.656286%20%2b0900%20KST%20m%3d%2b0.070678212">
+    <link rel="stylesheet" href="https://yoanp.github.io/css/reset.css?t=2019-08-13%2014%3a40%3a53.480178%20%2b0900%20KST%20m%3d%2b0.061858153">
+    <link rel="stylesheet" href="https://yoanp.github.io/css/pygments.css?t=2019-08-13%2014%3a40%3a53.480178%20%2b0900%20KST%20m%3d%2b0.061858153">
+    <link rel="stylesheet" href="https://yoanp.github.io/css/main.css?t=2019-08-13%2014%3a40%3a53.480178%20%2b0900%20KST%20m%3d%2b0.061858153">
     
-        <link rel="stylesheet" href="http://yoanp.github.io/css/override.css?t=2019-08-13%2014%3a32%3a57.656286%20%2b0900%20KST%20m%3d%2b0.070678212">
+        <link rel="stylesheet" href="https://yoanp.github.io/css/override.css?t=2019-08-13%2014%3a40%3a53.480178%20%2b0900%20KST%20m%3d%2b0.061858153">
     
 
 
@@ -61,7 +61,7 @@
 
 <link rel="shortcut icon"
 
-    href="http://yoanp.github.io/img/leaf.ico"
+    href="https://yoanp.github.io/img/leaf.ico"
 
 >
 
@@ -81,16 +81,16 @@
     <div class="container">
         <div class="content">
             
-            <a href="http://yoanp.github.io/"><div class="name">Yoan</div></a>
+            <a href="https://yoanp.github.io/"><div class="name">Yoan</div></a>
             
             <nav>
                 <ul>
                     
-                        <li class="nav-blog"><a href="http://yoanp.github.io/blog/"><span>Blog</span></a></li>
+                        <li class="nav-blog"><a href="https://yoanp.github.io/blog/"><span>Blog</span></a></li>
                     
-                        <li class="nav-about"><a href="http://yoanp.github.io/about/"><span>About</span></a></li>
+                        <li class="nav-about"><a href="https://yoanp.github.io/about/"><span>About</span></a></li>
                     
-                        <li class="nav-tags"><a href="http://yoanp.github.io/tags/"><span>Tags</span></a></li>
+                        <li class="nav-tags"><a href="https://yoanp.github.io/tags/"><span>Tags</span></a></li>
                     
                 </ul>
             </nav>
@@ -102,13 +102,13 @@
     <div class="container">
         <div class="content">
         
-            <a href="//github.com/yoanp" target="_blank" rel="noopener"><img class="icon" src="http://yoanp.github.io/img/github.svg" alt="github" /></a>
+            <a href="//github.com/yoanp" target="_blank" rel="noopener"><img class="icon" src="https://yoanp.github.io/img/github.svg" alt="github" /></a>
         
 
         
 
         
-            <a href="//twitter.com/crosoie" target="_blank" rel="noopener"><img class="icon" src="http://yoanp.github.io/img/twitter.svg" alt="twitter" /></a>
+            <a href="//twitter.com/crosoie" target="_blank" rel="noopener"><img class="icon" src="https://yoanp.github.io/img/twitter.svg" alt="twitter" /></a>
         
 
 	
@@ -130,7 +130,7 @@
         
 
         
-            <a href="mailto:crosoie@gmail.com"><img class="icon" src="http://yoanp.github.io/img/email.svg" alt="email" /></a>
+            <a href="mailto:crosoie@gmail.com"><img class="icon" src="https://yoanp.github.io/img/email.svg" alt="email" /></a>
         
 
         
@@ -152,7 +152,7 @@
 
 </div>
 
-                    <div class="initials"><a href="http://yoanp.github.io"></a></div>
+                    <div class="initials"><a href="https://yoanp.github.io"></a></div>
                 </div>
                 <div class="meta">
                     
@@ -423,12 +423,12 @@ KiB Swap:        0 total,        0 used,        0 free.   554208 cached Mem
                   <div class="tags">
                     <strong>Tags:</strong>
                   
-                    <a href="http://yoanp.github.io/tags/linux">linux</a>
+                    <a href="https://yoanp.github.io/tags/linux">linux</a>
                   
                   </div>
                   <br />
                 
-                <p class="back-to-posts"><a href="http://yoanp.github.io/blog">Back to posts</a></p>
+                <p class="back-to-posts"><a href="https://yoanp.github.io/blog">Back to posts</a></p>
             </div>
             <br>
             <div class="disqus">

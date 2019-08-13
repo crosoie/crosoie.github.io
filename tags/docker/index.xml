@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>docker on Yoanp</title>
-    <link>http://yoanp.github.io/tags/docker/</link>
+    <link>https://yoanp.github.io/tags/docker/</link>
     <description>Recent content in docker on Yoanp</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 23 Feb 2017 22:40:37 +0900</lastBuildDate>
     
-	<atom:link href="http://yoanp.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://yoanp.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>direct-lvm mode for docker</title>
-      <link>http://yoanp.github.io/blog/direct-lvm-mode-for-docker/</link>
+      <link>https://yoanp.github.io/blog/direct-lvm-mode-for-docker/</link>
       <pubDate>Thu, 23 Feb 2017 22:40:37 +0900</pubDate>
       
-      <guid>http://yoanp.github.io/blog/direct-lvm-mode-for-docker/</guid>
+      <guid>https://yoanp.github.io/blog/direct-lvm-mode-for-docker/</guid>
       <description>Docker는 ubuntu를 기반으로 개발되었습니다.
 그렇기 떄문에 도커의 기본적인 파일 스토리지 시스템은 AUFS입니다.
 문제는 AUFS는 레드헷 개열에서 지원하지 않는 파일시스템이지요.
@@ -26,10 +26,10 @@
     
     <item>
       <title>Docker 1.13 Release</title>
-      <link>http://yoanp.github.io/blog/docker-1.13-release/</link>
+      <link>https://yoanp.github.io/blog/docker-1.13-release/</link>
       <pubDate>Fri, 20 Jan 2017 22:19:09 +0900</pubDate>
       
-      <guid>http://yoanp.github.io/blog/docker-1.13-release/</guid>
+      <guid>https://yoanp.github.io/blog/docker-1.13-release/</guid>
       <description>1월 19일날 발표 된 docker 1.13의 특징을 소개하는 글 입니다. 도커 공식 블로그을 참고하였습니다.
 root # docker --version Docker version 1.13.0, build 49bf474  특히 도커 swarm mode가 1.12에 소개되었는데 해당 기능에 대한 기능개선과 변경사항이 생겼습니다.
 compose로 swarm mode 서비스를 배포 할 수 있습니다 docker stack deploy란 명령어를 통해 compose 파일을 지원합니다. 구축 및 서비스 관리가 편해지겠습니다.
@@ -39,10 +39,10 @@ Error response from daemon: client is newer than server  이젠 그렇지 않다
     
     <item>
       <title>Docker swarm</title>
-      <link>http://yoanp.github.io/blog/docker-swarm/</link>
+      <link>https://yoanp.github.io/blog/docker-swarm/</link>
       <pubDate>Sun, 04 Dec 2016 16:20:06 +0900</pubDate>
       
-      <guid>http://yoanp.github.io/blog/docker-swarm/</guid>
+      <guid>https://yoanp.github.io/blog/docker-swarm/</guid>
       <description>docker swarm 도커 1.9 버전에서 베타 딱지를 붙인 채 세상에 나왔던 Swarm은 2016년 7월에 도커 1.12버전 릴리즈때 베타 딱지를 떼고 도커 엔진에 포함 된 채로 새롭게 나왔습니다. (물론 기존의 Swarm 또한 지원 합니다.)
 도커 엔진 자체에 포함 된 만큼 여러가지 변화가 생겼습니다.
  도커 엔진 자체에 포함 도커 엔진에서 swarm mode를 on/off 가능 오버레이 네트워크와 swarm mode의 연계 (외부 키값 저장소가 필요하지 않아짐) native remote api, cli supported  도커사에서 공식적으로 말하고 있는 swarm의 특징은 아래와 같습니다.</description>

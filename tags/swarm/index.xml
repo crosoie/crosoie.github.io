@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>swarm on Yoanp</title>
-    <link>http://yoanp.github.io/tags/swarm/</link>
+    <link>https://yoanp.github.io/tags/swarm/</link>
     <description>Recent content in swarm on Yoanp</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 04 Dec 2016 16:20:06 +0900</lastBuildDate>
     
-	<atom:link href="http://yoanp.github.io/tags/swarm/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://yoanp.github.io/tags/swarm/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Docker swarm</title>
-      <link>http://yoanp.github.io/blog/docker-swarm/</link>
+      <link>https://yoanp.github.io/blog/docker-swarm/</link>
       <pubDate>Sun, 04 Dec 2016 16:20:06 +0900</pubDate>
       
-      <guid>http://yoanp.github.io/blog/docker-swarm/</guid>
+      <guid>https://yoanp.github.io/blog/docker-swarm/</guid>
       <description>docker swarm 도커 1.9 버전에서 베타 딱지를 붙인 채 세상에 나왔던 Swarm은 2016년 7월에 도커 1.12버전 릴리즈때 베타 딱지를 떼고 도커 엔진에 포함 된 채로 새롭게 나왔습니다. (물론 기존의 Swarm 또한 지원 합니다.)
 도커 엔진 자체에 포함 된 만큼 여러가지 변화가 생겼습니다.
  도커 엔진 자체에 포함 도커 엔진에서 swarm mode를 on/off 가능 오버레이 네트워크와 swarm mode의 연계 (외부 키값 저장소가 필요하지 않아짐) native remote api, cli supported  도커사에서 공식적으로 말하고 있는 swarm의 특징은 아래와 같습니다.</description>
