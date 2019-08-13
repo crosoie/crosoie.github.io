@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Yoan">
+<meta name="description" content="runit이란, 유닉스 크로스 플랫폼에서 작동하는 서비스 관리 프로그램 입니다.
+비슷한 종류로는 init, launchdm, systemd 등이 있습니다.
+구동되는 플랫폼은 아래와 같지요.
+ GNU/Linux *BSD MacOSX Solaris  서비스들이 runsv 의 child process로 실행이 되며, 관리를 받게 됩니다.
+(runsv : 서비스 데몬의 신호, 서비스 컨트롤 및 관리를 담당.)
+또한 sv를 이용하여 모니터링 되고 있는 서비스들을 관리 할 수 있습니다.
+저는 runit을 1번 프로세스로 사용하지 않고(systemd를 사용하지요) 특정 프로세스의 감시 툴로써 nginx를 모니터링 하고 auto restart 처리를 할 예정입니다.">
+
+<meta property="og:title" content="runit" />
+<meta property="og:description" content="runit이란, 유닉스 크로스 플랫폼에서 작동하는 서비스 관리 프로그램 입니다.
+비슷한 종류로는 init, launchdm, systemd 등이 있습니다.
+구동되는 플랫폼은 아래와 같지요.
+ GNU/Linux *BSD MacOSX Solaris  서비스들이 runsv 의 child process로 실행이 되며, 관리를 받게 됩니다.
+(runsv : 서비스 데몬의 신호, 서비스 컨트롤 및 관리를 담당.)
+또한 sv를 이용하여 모니터링 되고 있는 서비스들을 관리 할 수 있습니다.
+저는 runit을 1번 프로세스로 사용하지 않고(systemd를 사용하지요) 특정 프로세스의 감시 툴로써 nginx를 모니터링 하고 auto restart 처리를 할 예정입니다." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://yoanp.github.io/blog/runit/" />
+<meta property="article:published_time" content="2016-12-04T00:07:31+09:00" />
+<meta property="article:modified_time" content="2016-12-04T00:07:31+09:00" />
+
+
+<title>
+
+
+     runit 
+
+</title>
+<link rel="canonical" href="http://yoanp.github.io/blog/runit/">
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif+KR:400,700|Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="http://yoanp.github.io/css/reset.css?t=2019-08-13%2014%3a32%3a57.656502%20%2b0900%20KST%20m%3d%2b0.070894431">
+    <link rel="stylesheet" href="http://yoanp.github.io/css/pygments.css?t=2019-08-13%2014%3a32%3a57.656502%20%2b0900%20KST%20m%3d%2b0.070894431">
+    <link rel="stylesheet" href="http://yoanp.github.io/css/main.css?t=2019-08-13%2014%3a32%3a57.656502%20%2b0900%20KST%20m%3d%2b0.070894431">
+    
+        <link rel="stylesheet" href="http://yoanp.github.io/css/override.css?t=2019-08-13%2014%3a32%3a57.656502%20%2b0900%20KST%20m%3d%2b0.070894431">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="http://yoanp.github.io/img/leaf.ico"
+
+>
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+            <a href="http://yoanp.github.io/"><div class="name">Yoan</div></a>
+            
+            <nav>
+                <ul>
+                    
+                        <li class="nav-blog"><a href="http://yoanp.github.io/blog/"><span>Blog</span></a></li>
+                    
+                        <li class="nav-about"><a href="http://yoanp.github.io/about/"><span>About</span></a></li>
+                    
+                        <li class="nav-tags"><a href="http://yoanp.github.io/tags/"><span>Tags</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/yoanp" target="_blank" rel="noopener"><img class="icon" src="http://yoanp.github.io/img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/crosoie" target="_blank" rel="noopener"><img class="icon" src="http://yoanp.github.io/img/twitter.svg" alt="twitter" /></a>
+        
+
+	
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+            <a href="mailto:crosoie@gmail.com"><img class="icon" src="http://yoanp.github.io/img/email.svg" alt="email" /></a>
+        
+
+        
+
+        
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    runit
+
+</div>
+
+                    <div class="initials"><a href="http://yoanp.github.io"></a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Sun Dec 4 2016 00:07:31 KST'>Dec 4, 2016</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>One minute read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                
+
+<p>runit이란, 유닉스 크로스 플랫폼에서 작동하는 서비스 관리 프로그램 입니다.<br />
+비슷한 종류로는 init, launchdm, systemd 등이 있습니다.</p>
+
+<p>구동되는 플랫폼은 아래와 같지요.</p>
+
+<ul>
+<li>GNU/Linux</li>
+<li>*BSD</li>
+<li>MacOSX</li>
+<li>Solaris</li>
+</ul>
+
+<p>서비스들이 runsv 의 child process로 실행이 되며, 관리를 받게 됩니다.<br />
+(runsv : 서비스 데몬의 신호, 서비스 컨트롤 및 관리를 담당.)<br />
+또한 sv를 이용하여 모니터링 되고 있는 서비스들을 관리 할 수 있습니다.</p>
+
+<p>저는 runit을 1번 프로세스로 사용하지 않고(systemd를 사용하지요) 특정 프로세스의 감시 툴로써 nginx를 모니터링 하고 auto restart 처리를 할 예정입니다.<br />
+runsvdir은 service 디렉토리를 감시하고 해당 프로세스를 관리합니다.</p>
+
+<h2 id="자-설치해봅시다">자 설치해봅시다 :-)</h2>
+
+<p>기본 조건 : Centos7, <a href="https://packagecloud.io/imeyer/runit/install">RPM설치</a></p>
+
+<pre><code class="language-bash"># quick install
+curl -s https://packagecloud.io/install/repositories/imeyer/runit/script.rpm.sh | bash
+yum install runit -y
+</code></pre>
+
+<h2 id="설정">설정</h2>
+
+<h4 id="nginx-run-파일-생성">nginx run 파일 생성</h4>
+
+<p>runsvdir이 해당 프로세스를 run파일을 실행시키는 것으로 처리합니다.<br />
+제가 사용하는 run 파일을 보시지요.</p>
+
+<pre><code class="language-bash">cat /usr/local/nginx/run
+
+#!/bin/sh
+exec /usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf 2&gt;&amp;1
+</code></pre>
+
+<h4 id="경로-연결">경로 연결</h4>
+
+<pre><code class="language-bash">cd /etc/service
+ln -s /usr/local/nginx .
+</code></pre>
+
+<h2 id="확인">확인</h2>
+
+<p>프로세스가 정상적으로 구동되었음이 확인 됩니다.</p>
+
+<pre><code class="language-bash">pstree | grep runsv
+  |-runsvdir---runsv---nginx---13*[nginx]
+</code></pre>
+
+<h2 id="sv-명령어">sv 명령어</h2>
+
+<p>man 페이지를 보면 자세히 나옵니다만, 우선 대표적인 옵션을 봅시다.</p>
+
+<ul>
+<li>status : 서비스의 현재 상태를 보여줍니다.</li>
+<li>up (start) : 서비스를 구동시킵니다.</li>
+<li>down (stop) : 서비스의 TERM 신호와 CONT 신호를 보냅니다.</li>
+<li>reload : HUP</li>
+</ul>
+
+<p>그럼 이만 :-)</p>
+
+<h2 id="참고">참고</h2>
+
+<p><a href="http://smarden.org/runit">공식홈페이지</a><br />
+<a href="https://en.wikipedia.org/wiki/Runit">Wikipedia</a></p>
+
+                <br>
+                
+                  <div class="tags">
+                    <strong>Tags:</strong>
+                  
+                    <a href="http://yoanp.github.io/tags/runit">runit</a>
+                  
+                    <a href="http://yoanp.github.io/tags/init">init</a>
+                  
+                    <a href="http://yoanp.github.io/tags/systemd">systemd</a>
+                  
+                  </div>
+                  <br />
+                
+                <p class="back-to-posts"><a href="http://yoanp.github.io/blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yoanpark" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-54005049-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+  
+
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+

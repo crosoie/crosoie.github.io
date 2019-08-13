@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Yoan">
+<meta name="description" content="pcs: pacemaker/corosync 설정,관리 시스템
+ pacemaker: 고가용성 클러스터 리소스 관리자 (고장을 인지한 경우 대기장비로 서비스를 넘깁니다.- failover)
+corosync: 그룹커뮤니케이션 시스템을 구현하기 위한 HA기능 API 제공 (node status)
+ pcs를 이용하여 두대의 서버를 하나의 클러스터로 묶어 HA를 구현합니다.
+마스터 서버 장애시 스탠바이 장비가 마스터로 승계됩니다.
+두대 서버 모두 동일한 데이터를 유지하고 있어야 하기 때문에 이 문서에서는 단순 동기화 방식이 아닌 drbd를 구성 할 예정입니다.
+ drbd: HA 클러스터를 위해 디자인 된 네트워크 블럭 디바이스">
+
+<meta property="og:title" content="PCS를 이용한 HA구성" />
+<meta property="og:description" content="pcs: pacemaker/corosync 설정,관리 시스템
+ pacemaker: 고가용성 클러스터 리소스 관리자 (고장을 인지한 경우 대기장비로 서비스를 넘깁니다.- failover)
+corosync: 그룹커뮤니케이션 시스템을 구현하기 위한 HA기능 API 제공 (node status)
+ pcs를 이용하여 두대의 서버를 하나의 클러스터로 묶어 HA를 구현합니다.
+마스터 서버 장애시 스탠바이 장비가 마스터로 승계됩니다.
+두대 서버 모두 동일한 데이터를 유지하고 있어야 하기 때문에 이 문서에서는 단순 동기화 방식이 아닌 drbd를 구성 할 예정입니다.
+ drbd: HA 클러스터를 위해 디자인 된 네트워크 블럭 디바이스" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://yoanp.github.io/blog/pcs%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-ha%EA%B5%AC%EC%84%B1/" />
+<meta property="article:published_time" content="2017-03-04T13:45:07+09:00" />
+<meta property="article:modified_time" content="2017-03-04T13:45:07+09:00" />
+
+
+<title>
+
+
+     PCS를 이용한 HA구성 
+
+</title>
+<link rel="canonical" href="http://yoanp.github.io/blog/pcs%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-ha%EA%B5%AC%EC%84%B1/">
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif+KR:400,700|Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="http://yoanp.github.io/css/reset.css?t=2019-08-13%2014%3a32%3a57.650347%20%2b0900%20KST%20m%3d%2b0.064739619">
+    <link rel="stylesheet" href="http://yoanp.github.io/css/pygments.css?t=2019-08-13%2014%3a32%3a57.650347%20%2b0900%20KST%20m%3d%2b0.064739619">
+    <link rel="stylesheet" href="http://yoanp.github.io/css/main.css?t=2019-08-13%2014%3a32%3a57.650347%20%2b0900%20KST%20m%3d%2b0.064739619">
+    
+        <link rel="stylesheet" href="http://yoanp.github.io/css/override.css?t=2019-08-13%2014%3a32%3a57.650347%20%2b0900%20KST%20m%3d%2b0.064739619">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="http://yoanp.github.io/img/leaf.ico"
+
+>
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+            <a href="http://yoanp.github.io/"><div class="name">Yoan</div></a>
+            
+            <nav>
+                <ul>
+                    
+                        <li class="nav-blog"><a href="http://yoanp.github.io/blog/"><span>Blog</span></a></li>
+                    
+                        <li class="nav-about"><a href="http://yoanp.github.io/about/"><span>About</span></a></li>
+                    
+                        <li class="nav-tags"><a href="http://yoanp.github.io/tags/"><span>Tags</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/yoanp" target="_blank" rel="noopener"><img class="icon" src="http://yoanp.github.io/img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/crosoie" target="_blank" rel="noopener"><img class="icon" src="http://yoanp.github.io/img/twitter.svg" alt="twitter" /></a>
+        
+
+	
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+            <a href="mailto:crosoie@gmail.com"><img class="icon" src="http://yoanp.github.io/img/email.svg" alt="email" /></a>
+        
+
+        
+
+        
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    PCS를 이용한 HA구성
+
+</div>
+
+                    <div class="initials"><a href="http://yoanp.github.io"></a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Sat Mar 4 2017 13:45:07 KST'>Mar 4, 2017</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>6 minutes read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                
+
+<p><code>pcs</code>: pacemaker/corosync 설정,관리 시스템</p>
+
+<blockquote>
+<p><code>pacemaker</code>: 고가용성 클러스터 리소스 관리자 (고장을 인지한 경우 대기장비로 서비스를 넘깁니다.- failover)<br />
+<code>corosync</code>: 그룹커뮤니케이션 시스템을 구현하기 위한 HA기능 API 제공 (node status)</p>
+</blockquote>
+
+<p>pcs를 이용하여 두대의 서버를 하나의 클러스터로 묶어 HA를 구현합니다.<br />
+마스터 서버 장애시 스탠바이 장비가 마스터로 승계됩니다.<br />
+두대 서버 모두 동일한 데이터를 유지하고 있어야 하기 때문에 이 문서에서는 단순 동기화 방식이 아닌 drbd를 구성 할 예정입니다.</p>
+
+<blockquote>
+<p><code>drbd</code>: HA 클러스터를 위해 디자인 된 네트워크 블럭 디바이스</p>
+</blockquote>
+
+<h2 id="기본-정보">기본 정보</h2>
+
+<blockquote>
+<p>CentOS 7.3
+pcs-0.9.152-10
+pacemaker-1.1
+corosync-2.4</p>
+</blockquote>
+
+<h2 id="기본-설정">기본 설정</h2>
+
+<h3 id="호스트-설정">호스트 설정</h3>
+
+<blockquote>
+<p>두서버 모두 적용 해 주세요.</p>
+</blockquote>
+
+<pre><code class="language-bash">root # cat /etc/hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+10.0.0.3 master
+10.0.0.4 standby
+</code></pre>
+
+<h3 id="방화벽-설정">방화벽 설정</h3>
+
+<p>두서버가 서로 통신이 되어야 합니다.<br />
+저는 내부망을 ALL로 열었어요…</p>
+
+<h2 id="drbd">DRBD</h2>
+
+<h3 id="패키지-설치">패키지 설치</h3>
+
+<p>DRBD 패키지를 설치해줍니다.</p>
+
+<pre><code class="language-bash">root # cd /usr/local/src
+root # wget http://elrepo.reloumirrors.net/elrepo/el7/x86_64/RPMS/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
+root # rpm -ivh elrepo-release-7.0-2.el7.elrepo.noarch.rpm
+root # yum -y install drbd kmod-drbd84 kernel-devel
+</code></pre>
+
+<h3 id="drbd-설정">DRBD 설정</h3>
+
+<p>global 설정 파일에서 18~20줄 주석을 해제합니다.</p>
+
+<h4 id="리소스-파일을-생성합니다">리소스 파일을 생성합니다</h4>
+
+<pre><code class="language-bash">root # vi /etc/drbd.d/storage.res
+resource &quot;storage&quot; {
+     protocol C;
+     startup {
+          wfc-timeout       0;      ## Infinite!
+          degr-wfc-timeout  120;    ## 2 minutes.
+     }
+     disk {
+        on-io-error detach;
+        resync-rate 300M;
+     }
+    net {
+        timeout             60;     #  6 seconds  (unit = 0.1 seconds)
+        connect-int         10;     # 10 seconds  (unit = 1 second)
+        ping-int            10;     # 10 seconds  (unit = 1 second)
+        max-buffers         20000;
+        unplug-watermark    20000;
+        max-epoch-size      20000;
+    }
+     # It is valid to move device, disk and meta-disk to the
+     # resource level.
+    on master {
+        device /dev/drbd0;
+        disk /dev/sda5;
+        address 10.0.0.3:7789;
+        meta-disk internal;
+    }
+    on standby {
+        device /dev/drbd0;
+        disk /dev/sda5;
+        address 10.0.0.3:7789;
+        meta-disk internal;
+    }
+}
+</code></pre>
+
+<h3 id="drbd-리소스-생성">DRBD 리소스 생성</h3>
+
+<pre><code class="language-bash">root # drbdadm create-md storage
+initializing activity log
+NOT initializing bitmap
+Writing meta data...
+New drbd meta data block successfully created.
+</code></pre>
+
+<h3 id="drbd-구동-및-동기화">DRBD 구동 및 동기화</h3>
+
+<p>실행!</p>
+
+<pre><code class="language-bash">root # systemctl start drbd
+</code></pre>
+
+<h3 id="데이터-동기화를-합니다">데이터 동기화를 합니다</h3>
+
+<blockquote>
+<p>MASTER에서 실행합니다.</p>
+</blockquote>
+
+<pre><code class="language-bash">root # drbdadm -- --overwrite-data-of-peer primary storage
+</code></pre>
+
+<h2 id="ha-구성">HA 구성</h2>
+
+<h3 id="패키지-설치-1">패키지 설치</h3>
+
+<p>두서버 모두 적용 해 주세요.</p>
+
+<pre><code class="language-bash">yum install -y corosync pacemaker pcs resource-agents
+</code></pre>
+
+<h3 id="pcsd-실행">pcsd 실행</h3>
+
+<p>두서버 모두 적용 해 주세요.</p>
+
+<pre><code class="language-bash">systemctl start pcsd.service
+systemctl enable pcsd.service
+systemctl enable corosync.service
+systemctl enable pacemaker.service
+</code></pre>
+
+<h3 id="인증-계정-적용">인증 계정 적용</h3>
+
+<p>해당 인증 계정 설정을 통하여 한대의 서버에서 클러스터를 생성할 경우 모든 서버에 반영이 됩니다.</p>
+
+<pre><code class="language-bash">root # passwd hacluster
+hacluster 사용자의 비밀 번호 변경 중
+새  암호 :
+root # pcs cluster auth master
+Username: hacluster
+Password: ********************
+root # pcs cluster auth standby
+Username: hacluster
+Password: ********************
+</code></pre>
+
+<p>정상적으로 인증되었는지 확인합니다</p>
+
+<pre><code class="language-bash">root # pcs cluster auth master standby
+master: Already authorized
+standby: Already authorized
+</code></pre>
+
+<h3 id="클러스터-구성">클러스터 구성</h3>
+
+<p><code>FileCluster란</code> 이름의 클러스터를 생성합니다.
+해당 클러스터엔 master/standby 두대의 서버가 포함됩니다.
+데이터 전송은 UDP통신을 사용하도록 설정하였습니다.</p>
+
+<pre><code class="language-bash">root # pcs cluster setup --start --name FileCluster master standby --transport udpu
+</code></pre>
+
+<p>프로퍼티 설정을 추가로 진행합니다.</p>
+
+<p><code>STONITH</code>: (Shoot The Head in The Head) 가짜 노드 혹은 의도치 않은 동시 엑세스로 인한 데이터 손상을 보호합니다.
+<code>no-quorum-policy</code>: 클러스터에 quorum이 없을 때의 수행작업을 설정합니다.
+<code>resource-stickiness</code>: 서비스 지속력</p>
+
+<pre><code class="language-bash">root # pcs property set stonith-enabled=false
+root # pcs property set no-quorum-policy=ignore
+root # pcs property set default-resource-stickiness=100
+</code></pre>
+
+<p>정상적으로 구성되었는지 확인합니다</p>
+
+<pre><code class="language-bash">root # pcs status
+Cluster name: FileCluster
+Stack: corosync
+Current DC: master (version 1.1.15-11.el7_3.2-e174ec8) - partition with quorum
+Last updated: Fri Mar  3 14:47:29 2017		Last change: Fri Mar  3 23:27:16 2017 by hacluster via crmd on master
+ 
+2 nodes and 0 resources configured
+ 
+Online: [ master standby ]
+ 
+No resources
+ 
+ 
+Daemon Status:
+  corosync: active/disabled
+  pacemaker: active/disabled
+  pcsd: active/enabled
+</code></pre>
+
+<h3 id="리소스-생성">리소스 생성</h3>
+
+<p>failover 설정이 포함되도록 리소스를 생성합니다.</p>
+
+<p>우선 리소스 에이전트의 종류는 아래와 같습니다.</p>
+
+<h4 id="heartbeat-resource-agents">Heartbeat Resource Agents</h4>
+
+<p>예전에 사용하던 LSB방식의 init 스크립트를 뜻합니다.</p>
+
+<h4 id="lsb-resource-agents">LSB Resource Agents</h4>
+
+<p>/etc/init.d 아래에 존재하는 스크립트입니다. 기본적으로 OS/배포판에서 제공합니다.
+하지만 <a href="http://refspecs.linux-foundation.org/LSB_3.2.0/LSB-Core-generic/LSB-Core-generic/iniscrptact.html">LSB 스펙</a>을 준수해야 합니다.</p>
+
+<p>LSB 스펙을 준수하여 직접 스크립트를 만들어 사용할 수 있습니다.</p>
+
+<h4 id="ocf-resource-agents">OCF Resource Agents</h4>
+
+<p>기본적으로 제공하는 LSB 익스텐션입니다.
+아래 경로에서 기본 스크립트를 확인 할 수 있습니다.
+<code>/lib/ocf/resource.d/heartbeat</code></p>
+
+<p>저는 Apache를 웹서버로 사용 할 예정입니다.
+따라서 아래 설정에는 drbd, apache가 각자 ocf,lsb를 이용하여 구동되도록 설정되어있습니다.</p>
+
+<p>CIB(Cluster Information Base) 라고 불리는 Raw xml에 우선 설정을 저장 후 업데이트하는 방식으로 진행합니다.</p>
+
+<blockquote>
+<p>you want to edit the saved CIB using pcs (pcs -f )</p>
+
+<pre><code class="language-bash">root # pcs cluster cib drbd_cfg
+root # pcs -f drbd_cfg resource create Data ocf:linbit:drbd drbd_resource=Storage  op monitor timeout=&quot;30&quot; interval=&quot;20&quot; role=&quot;Slave&quot; op monitor timeout=&quot;30&quot; interval=&quot;10&quot; role=&quot;Master&quot;
+root # pcs -f drbd_cfg resource master DataSync Data master-max=1 master-node-max=1 clone-max=2 clone-node-max=1 notify=true
+root # pcs -f drbd_cfg resource create Storage Filesystem device=&quot;/dev/drbd0&quot; directory=&quot;/data&quot; fstype=&quot;xfs&quot;
+root # pcs -f drbd_cfg resource create internal_ip ocf:heartbeat:IPaddr2 ip=10.0.0.5 cidr_netmask=32 op monitor timeout=&quot;30&quot; interval=&quot;20&quot; role=&quot;Slave&quot; op monitor timeout=&quot;30&quot; interval=&quot;10&quot; role=&quot;Master&quot;
+root # pcs -f drbd_cfg resource create external_ip ocf:heartbeat:IPaddr2 ip=1.1.1.5 cidr_netmask=32 op monitor timeout=&quot;30&quot; interval=&quot;20&quot; role=&quot;Slave&quot; op monitor timeout=&quot;30&quot; interval=&quot;10&quot; role=&quot;Master&quot;
+root # pcs -f drbd_cfg resource create apache lsb:apache op monitor interval=30s
+ 
+root # pcs -f drbd_cfg resource group add HA-GROUP internal_ip external_ip Storage apache
+root # pcs -f drbd_cfg constraint colocation add HA-GROUP DataSync INFINITY with-rsc-role=Master
+root # pcs -f drbd_cfg constraint order promote DataSync then start Storage
+ 
+root # pcs cluster cib-push drbd_cfg
+CIB updated
+ 
+root # pcs resource create ping_check ocf:pacemaker:ping host_list=&quot;10.0.0.1&quot; multiplier=&quot;1000&quot; dampen=10s op monitor interval=5s
+root # pcs resource clone ping_check globally-unique=false
+</code></pre>
+
+<p>2개의 아이피를 설정하였기 때문에 ping_check를 하는 리소스를 추가로 설정하였습니다.(주기적으로 게이트웨이에 핑을 날리게 됩니다.)</p>
+</blockquote>
+
+<h3 id="클러스터-구성-확인">클러스터 구성 확인</h3>
+
+<p>pcs status 명령어를 통해 현재 노드의 상태, 리소스 리스트, 데몬상태를 모두 확인 할 수 있습니다.</p>
+
+<pre><code class="language-bash">root # pcs status
+Cluster name: FileCluster
+Stack: corosync
+Current DC: master (version 1.1.15-11.el7_3.2-e174ec8) - partition with quorum
+Last updated: Sat Mar  4 00:05:29 2017		Last change: Fri Mar  3 22:20:13 2017 by root via cibadmin on master
+ 
+2 nodes and 8 resources configured
+ 
+Online: [ master standby ]
+ 
+Full list of resources:
+ 
+ Master/Slave Set: DataSync [Data]
+     Masters: [ master ]
+     Slaves: [ standby ]
+ Resource Group: HA-GROUP
+     internal_ip	(ocf::heartbeat:IPaddr2):	Started master
+     external_ip	(ocf::heartbeat:IPaddr2):	Started master
+     Storage	(ocf::heartbeat:Filesystem):	Started master
+     apache	(lsb:apache):	Started master
+ Clone Set: ping_check-clone [ping_check]
+     Started: [ master standby ]
+ 
+Daemon Status:
+  corosync: active/disabled
+  pacemaker: active/disabled
+  pcsd: active/enabled
+</code></pre>
+
+<h2 id="그-외-소소한-팁">그 외 소소한 팁</h2>
+
+<h3 id="pcs-설정-삭제">PCS 설정 삭제</h3>
+
+<p>설정을 잘못할때가 있죠.. 새로운 마음으로 다시 시작할 때 아래와 같이 사용합니다.</p>
+
+<pre><code class="language-bash">root # pcs cluster stop --all
+root # pcs cluster destroy --all
+</code></pre>
+
+<h3 id="pcs-cluster-standby-설정-on-off">PCS cluster standby 설정 (on/off)</h3>
+
+<p>장애테스느는 아래와 같이 하시면 됩니다.
+standby 로 설정하면 해당 노드의 상태가 Online에서 standby로 되며 서비스에서 빠집니다.</p>
+
+<pre><code class="language-bash">root # pcs cluster standby $CLUSTER_NAME
+root # pcs cluster unstandby $CLUSTER_NAME
+</code></pre>
+
+<h3 id="linux-ha-manual-pages">Linux-HA manual pages</h3>
+
+<p>영어를 잘하신다면 읽고 전체 번역을 부탁드려도 될까요</p>
+
+<h3 id="pcs-apache-settting">PCS APACHE SETTTING</h3>
+
+<p>전 lsb로 올렸지만(init.d/apache를 직접만들었어요) 기본적으로 제공하는 OCF를 사용하시는 것 또한 방법입니다.</p>
+
+<p><a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-an-apache-active-passive-cluster-using-pacemaker-on-centos-7">LINK1</a><br />
+<a href="http://linux-ha.org/doc/man-pages/re-ra-apache.html">LINK2</a></p>
+
+<pre><code class="language-bash">pcs resource create apache ocf:heartbeat:apache \
+configfile=/etc/httpd/conf/httpd.conf \
+statusurl=&quot;http://localhost/server-status&quot; \
+op monitor timeout=&quot;20s&quot; interval=&quot;10&quot;
+</code></pre>
+
+<h3 id="logging">Logging</h3>
+
+<p>아래 로그를 보는건 기본이죠? :-)</p>
+
+<ul>
+<li>/var/log/cluster/corosync.log</li>
+<li>/var/log/pcsd/pcsd.log</li>
+<li>/var/log/pacemaker.log</li>
+</ul>
+
+<h3 id="crm-mon">crm_mon</h3>
+
+<p>Pacemaker 클러스터 리소스 매니저의 한 부분..</p>
+
+<p><code>pcs status</code>를 여러번 입력하긴 힘들기 때문에 전 사용합니다.</p>
+
+<p>그럼 이만 :-)</p>
+
+                <br>
+                
+                <p class="back-to-posts"><a href="http://yoanp.github.io/blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yoanpark" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-54005049-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+  
+
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+

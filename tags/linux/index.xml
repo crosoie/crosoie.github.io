@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>linux on Yoanp</title>
+    <link>http://yoanp.github.io/tags/linux/</link>
+    <description>Recent content in linux on Yoanp</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 04 Dec 2016 16:14:34 +0900</lastBuildDate>
+    
+	<atom:link href="http://yoanp.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Linux Performance Analysis</title>
+      <link>http://yoanp.github.io/blog/linux-performance-analysis/</link>
+      <pubDate>Sun, 04 Dec 2016 16:14:34 +0900</pubDate>
+      
+      <guid>http://yoanp.github.io/blog/linux-performance-analysis/</guid>
+      <description>넷플릭스 테크 블로그에 올라온 포스트를 번역하였습니다. 시스템 엔지니어로써 기본적으로 알아야하는 명령어들입니다. 리마인드 겸 제 입맛에 맞게 해석-작성되었으니.. 참고해주시면 감사하겠습니다.
+당신은 서버의 퍼포먼스 이슈가 발생하여 서버에 로그인 하였을 때 1분 동안 확인 하는 것이 무엇입니까?
+우리(넷플릭스)는 거대한 EC2 리눅스 클라우드를 가지고 있으며, 다수의 퍼포먼스 분석 툴을 이용한 모니터링 및 퍼포먼스에 대한 연구를 진행하고 있습니다.
+그 툴들에는 Atlas 와 Vector 가 포함되어 있지요. 이러한 도구들은 대부분의 이슈를 해결하는데 도움이 되지만, 때때로 인스턴스에 접근하여 기존의 보편적인 리눅스 퍼포먼스 툴을 사용해야 하는 일들이 생깁니다.</description>
+    </item>
+    
+  </channel>
+</rss>

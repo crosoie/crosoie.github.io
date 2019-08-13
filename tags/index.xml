@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Yoanp</title>
+    <link>http://yoanp.github.io/tags/</link>
+    <description>Recent content in Tags on Yoanp</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 23 Feb 2017 22:40:37 +0900</lastBuildDate>
+    
+	<atom:link href="http://yoanp.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>docker</title>
+      <link>http://yoanp.github.io/tags/docker/</link>
+      <pubDate>Thu, 23 Feb 2017 22:40:37 +0900</pubDate>
+      
+      <guid>http://yoanp.github.io/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>swarm</title>
+      <link>http://yoanp.github.io/tags/swarm/</link>
+      <pubDate>Sun, 04 Dec 2016 16:20:06 +0900</pubDate>
+      
+      <guid>http://yoanp.github.io/tags/swarm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linux</title>
+      <link>http://yoanp.github.io/tags/linux/</link>
+      <pubDate>Sun, 04 Dec 2016 16:14:34 +0900</pubDate>
+      
+      <guid>http://yoanp.github.io/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>init</title>
+      <link>http://yoanp.github.io/tags/init/</link>
+      <pubDate>Sun, 04 Dec 2016 00:07:31 +0900</pubDate>
+      
+      <guid>http://yoanp.github.io/tags/init/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>runit</title>
+      <link>http://yoanp.github.io/tags/runit/</link>
+      <pubDate>Sun, 04 Dec 2016 00:07:31 +0900</pubDate>
+      
+      <guid>http://yoanp.github.io/tags/runit/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>systemd</title>
+      <link>http://yoanp.github.io/tags/systemd/</link>
+      <pubDate>Sun, 04 Dec 2016 00:07:31 +0900</pubDate>
+      
+      <guid>http://yoanp.github.io/tags/systemd/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

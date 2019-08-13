@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>systemd on Yoanp</title>
+    <link>http://yoanp.github.io/tags/systemd/</link>
+    <description>Recent content in systemd on Yoanp</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 04 Dec 2016 00:07:31 +0900</lastBuildDate>
+    
+	<atom:link href="http://yoanp.github.io/tags/systemd/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>runit</title>
+      <link>http://yoanp.github.io/blog/runit/</link>
+      <pubDate>Sun, 04 Dec 2016 00:07:31 +0900</pubDate>
+      
+      <guid>http://yoanp.github.io/blog/runit/</guid>
+      <description>runit이란, 유닉스 크로스 플랫폼에서 작동하는 서비스 관리 프로그램 입니다.
+비슷한 종류로는 init, launchdm, systemd 등이 있습니다.
+구동되는 플랫폼은 아래와 같지요.
+ GNU/Linux *BSD MacOSX Solaris  서비스들이 runsv 의 child process로 실행이 되며, 관리를 받게 됩니다.
+(runsv : 서비스 데몬의 신호, 서비스 컨트롤 및 관리를 담당.)
+또한 sv를 이용하여 모니터링 되고 있는 서비스들을 관리 할 수 있습니다.
+저는 runit을 1번 프로세스로 사용하지 않고(systemd를 사용하지요) 특정 프로세스의 감시 툴로써 nginx를 모니터링 하고 auto restart 처리를 할 예정입니다.</description>
+    </item>
+    
+  </channel>
+</rss>
