@@ -6,10 +6,28 @@
     <description>Recent content in Tags on Yoanp</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 23 Feb 2017 22:40:37 +0900</lastBuildDate>
+    <lastBuildDate>Sat, 04 Mar 2017 13:45:07 +0900</lastBuildDate>
     
 	<atom:link href="https://yoanp.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>HA</title>
+      <link>https://yoanp.github.io/tags/ha/</link>
+      <pubDate>Sat, 04 Mar 2017 13:45:07 +0900</pubDate>
+      
+      <guid>https://yoanp.github.io/tags/ha/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>pcs</title>
+      <link>https://yoanp.github.io/tags/pcs/</link>
+      <pubDate>Sat, 04 Mar 2017 13:45:07 +0900</pubDate>
+      
+      <guid>https://yoanp.github.io/tags/pcs/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>docker</title>
@@ -26,6 +44,15 @@
       <pubDate>Sun, 04 Dec 2016 16:20:06 +0900</pubDate>
       
       <guid>https://yoanp.github.io/tags/swarm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ssl</title>
+      <link>https://yoanp.github.io/tags/ssl/</link>
+      <pubDate>Sun, 04 Dec 2016 16:17:20 +0900</pubDate>
+      
+      <guid>https://yoanp.github.io/tags/ssl/</guid>
       <description></description>
     </item>
     

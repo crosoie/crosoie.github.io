@@ -55,11 +55,11 @@ corosync: 그룹커뮤니케이션 시스템을 구현하기 위한 HA기능 API
 
 
     
-    <link rel="stylesheet" href="https://yoanp.github.io/css/reset.css?t=2019-08-14%2014%3a30%3a52.115539%20%2b0900%20KST%20m%3d%2b0.053563616">
-    <link rel="stylesheet" href="https://yoanp.github.io/css/pygments.css?t=2019-08-14%2014%3a30%3a52.115539%20%2b0900%20KST%20m%3d%2b0.053563616">
-    <link rel="stylesheet" href="https://yoanp.github.io/css/main.css?t=2019-08-14%2014%3a30%3a52.115539%20%2b0900%20KST%20m%3d%2b0.053563616">
+    <link rel="stylesheet" href="https://yoanp.github.io/css/reset.css?t=2019-08-14%2017%3a04%3a10.819242%20%2b0900%20KST%20m%3d%2b0.080678905">
+    <link rel="stylesheet" href="https://yoanp.github.io/css/pygments.css?t=2019-08-14%2017%3a04%3a10.819242%20%2b0900%20KST%20m%3d%2b0.080678905">
+    <link rel="stylesheet" href="https://yoanp.github.io/css/main.css?t=2019-08-14%2017%3a04%3a10.819242%20%2b0900%20KST%20m%3d%2b0.080678905">
     
-        <link rel="stylesheet" href="https://yoanp.github.io/css/override.css?t=2019-08-14%2014%3a30%3a52.115539%20%2b0900%20KST%20m%3d%2b0.053563616">
+        <link rel="stylesheet" href="https://yoanp.github.io/css/override.css?t=2019-08-14%2017%3a04%3a10.819242%20%2b0900%20KST%20m%3d%2b0.080678905">
     
 
 
@@ -412,8 +412,8 @@ Daemon Status:
 root # pcs -f drbd_cfg resource create Data ocf:linbit:drbd drbd_resource=Storage  op monitor timeout=&quot;30&quot; interval=&quot;20&quot; role=&quot;Slave&quot; op monitor timeout=&quot;30&quot; interval=&quot;10&quot; role=&quot;Master&quot;
 root # pcs -f drbd_cfg resource master DataSync Data master-max=1 master-node-max=1 clone-max=2 clone-node-max=1 notify=true
 root # pcs -f drbd_cfg resource create Storage Filesystem device=&quot;/dev/drbd0&quot; directory=&quot;/data&quot; fstype=&quot;xfs&quot;
-root # pcs -f drbd_cfg resource create internal_ip ocf:heartbeat:IPaddr2 ip=10.0.0.5 cidr_netmask=32 op monitor timeout=&quot;30&quot; interval=&quot;20&quot; role=&quot;Slave&quot; op monitor timeout=&quot;30&quot; interval=&quot;10&quot; role=&quot;Master&quot;
-root # pcs -f drbd_cfg resource create external_ip ocf:heartbeat:IPaddr2 ip=1.1.1.5 cidr_netmask=32 op monitor timeout=&quot;30&quot; interval=&quot;20&quot; role=&quot;Slave&quot; op monitor timeout=&quot;30&quot; interval=&quot;10&quot; role=&quot;Master&quot;
+root # pcs -f drbd_cfg resource create internal_ip ocf💓IPaddr2 ip=10.0.0.5 cidr_netmask=32 op monitor timeout=&quot;30&quot; interval=&quot;20&quot; role=&quot;Slave&quot; op monitor timeout=&quot;30&quot; interval=&quot;10&quot; role=&quot;Master&quot;
+root # pcs -f drbd_cfg resource create external_ip ocf💓IPaddr2 ip=1.1.1.5 cidr_netmask=32 op monitor timeout=&quot;30&quot; interval=&quot;20&quot; role=&quot;Slave&quot; op monitor timeout=&quot;30&quot; interval=&quot;10&quot; role=&quot;Master&quot;
 root # pcs -f drbd_cfg resource create apache lsb:apache op monitor interval=30s
  
 root # pcs -f drbd_cfg resource group add HA-GROUP internal_ip external_ip Storage apache
@@ -450,9 +450,9 @@ Full list of resources:
      Masters: [ master ]
      Slaves: [ standby ]
  Resource Group: HA-GROUP
-     internal_ip	(ocf::heartbeat:IPaddr2):	Started master
-     external_ip	(ocf::heartbeat:IPaddr2):	Started master
-     Storage	(ocf::heartbeat:Filesystem):	Started master
+     internal_ip	(ocf:💓IPaddr2):	Started master
+     external_ip	(ocf:💓IPaddr2):	Started master
+     Storage	(ocf:💓Filesystem):	Started master
      apache	(lsb:apache):	Started master
  Clone Set: ping_check-clone [ping_check]
      Started: [ master standby ]
@@ -493,7 +493,7 @@ root # pcs cluster unstandby $CLUSTER_NAME
 <p><a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-an-apache-active-passive-cluster-using-pacemaker-on-centos-7">LINK1</a><br />
 <a href="http://linux-ha.org/doc/man-pages/re-ra-apache.html">LINK2</a></p>
 
-<pre><code class="language-bash">pcs resource create apache ocf:heartbeat:apache \
+<pre><code class="language-bash">pcs resource create apache ocf💓apache \
 configfile=/etc/httpd/conf/httpd.conf \
 statusurl=&quot;http://localhost/server-status&quot; \
 op monitor timeout=&quot;20s&quot; interval=&quot;10&quot;
@@ -518,6 +518,16 @@ op monitor timeout=&quot;20s&quot; interval=&quot;10&quot;
 <p>그럼 이만 :-)</p>
 
                 <br>
+                
+                  <div class="tags">
+                    <strong>Tags:</strong>
+                  
+                    <a href="https://yoanp.github.io/tags/ha">HA</a>
+                  
+                    <a href="https://yoanp.github.io/tags/pcs">pcs</a>
+                  
+                  </div>
+                  <br />
                 
                 <p class="back-to-posts"><a href="https://yoanp.github.io/blog">Back to posts</a></p>
             </div>

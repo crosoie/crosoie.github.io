@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ssl on Yoanp</title>
+    <link>https://yoanp.github.io/tags/ssl/</link>
+    <description>Recent content in ssl on Yoanp</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 04 Dec 2016 16:17:20 +0900</lastBuildDate>
+    
+	<atom:link href="https://yoanp.github.io/tags/ssl/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>SSL convert</title>
+      <link>https://yoanp.github.io/blog/ssl-convert/</link>
+      <pubDate>Sun, 04 Dec 2016 16:17:20 +0900</pubDate>
+      
+      <guid>https://yoanp.github.io/blog/ssl-convert/</guid>
+      <description>CRT 파일을 PFX로 변환 Key 파일, Crt 파일, Chain 파일을 PFX 파일로 합체시켜보겠습니다.
+openssl pkcs12 -export -out server.pfx -inkey server.key -in server.crt -certfile server_CHAIN.crt  PFX에서 키 뽑아내기 PFX에서 KEY 뽑아내기 openssl pkcs12 -in server.pfx -nocerts -passin pass:&#39;PASSWORD&#39; -nodes -out server.key sed -ni -e &#39;/^-----BEGIN/,/-----END/p&#39; server.key  PFX에서 인증서(crt) 뽑아내기 openssl pkcs12 -in server.pfx -clcerts -nokeys -passin pass:&#39;PASSWORD&#39; -out server.crt sed -ni -e &#39;/^-----BEGIN/,/-----END/p&#39; server.crt  PFX에서 체인인증서 뽑아내기 openssl pkcs12 -in server.</description>
+    </item>
+    
+  </channel>
+</rss>
