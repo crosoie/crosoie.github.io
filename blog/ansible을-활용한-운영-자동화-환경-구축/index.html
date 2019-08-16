@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Yoan">
+<meta name="description" content="요즘 Cloud Native☁️란 말을 많이 듣고 있습니다.
+클라우드 컴퓨팅 모델의 장점을 모두 활용하여 서비스를 개발하고 운영하는 방식이죠.
+클라우드 환경에서 서비스를 시작한 회사, 많은 준비와 시행착오 끝에 Cloud 환경으로 모든 서비스를 옮긴 회사를 제외하고 서비스 특성, 환경 혹은 리소스 등의 여러가지 이유로 On Premise 환경과 Cloud 환경 모두 서비스를 운영하고 제공하는 경우가 많습니다. (제가 요기 속해있습니다.)
+당연한 말이지만 서비스가 많아지면 많아질수록 운영 난이도는 올라갑니다.
+관리 포인트가 늘어나고 접근 방식이 달라지며 결정적으로 할일이 많아집니다.">
+
+<meta property="og:title" content="Ansible을 활용한 운영 자동화 환경 구축" />
+<meta property="og:description" content="요즘 Cloud Native☁️란 말을 많이 듣고 있습니다.
+클라우드 컴퓨팅 모델의 장점을 모두 활용하여 서비스를 개발하고 운영하는 방식이죠.
+클라우드 환경에서 서비스를 시작한 회사, 많은 준비와 시행착오 끝에 Cloud 환경으로 모든 서비스를 옮긴 회사를 제외하고 서비스 특성, 환경 혹은 리소스 등의 여러가지 이유로 On Premise 환경과 Cloud 환경 모두 서비스를 운영하고 제공하는 경우가 많습니다. (제가 요기 속해있습니다.)
+당연한 말이지만 서비스가 많아지면 많아질수록 운영 난이도는 올라갑니다.
+관리 포인트가 늘어나고 접근 방식이 달라지며 결정적으로 할일이 많아집니다." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yoanp.github.io/blog/ansible%EC%9D%84-%ED%99%9C%EC%9A%A9%ED%95%9C-%EC%9A%B4%EC%98%81-%EC%9E%90%EB%8F%99%ED%99%94-%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%B6%95/" />
+<meta property="article:published_time" content="2019-08-13T14:51:17+09:00" />
+<meta property="article:modified_time" content="2019-08-13T14:51:17+09:00" />
+
+
+<title>
+
+
+     Ansible을 활용한 운영 자동화 환경 구축 
+
+</title>
+<link rel="canonical" href="https://yoanp.github.io/blog/ansible%EC%9D%84-%ED%99%9C%EC%9A%A9%ED%95%9C-%EC%9A%B4%EC%98%81-%EC%9E%90%EB%8F%99%ED%99%94-%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%B6%95/">
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif+KR:400,700|Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="https://yoanp.github.io/css/reset.css?t=2019-08-16%2014%3a13%3a11.820726%20%2b0900%20KST%20m%3d%2b0.065558245">
+    <link rel="stylesheet" href="https://yoanp.github.io/css/pygments.css?t=2019-08-16%2014%3a13%3a11.820726%20%2b0900%20KST%20m%3d%2b0.065558245">
+    <link rel="stylesheet" href="https://yoanp.github.io/css/main.css?t=2019-08-16%2014%3a13%3a11.820726%20%2b0900%20KST%20m%3d%2b0.065558245">
+    
+        <link rel="stylesheet" href="https://yoanp.github.io/css/override.css?t=2019-08-16%2014%3a13%3a11.820726%20%2b0900%20KST%20m%3d%2b0.065558245">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="https://yoanp.github.io/img/leaf.ico"
+
+>
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+            <a href="https://yoanp.github.io/"><div class="name">Yoan</div></a>
+            
+            <nav>
+                <ul>
+                    
+                        <li class="nav-blog"><a href="https://yoanp.github.io/blog/"><span>Blog</span></a></li>
+                    
+                        <li class="nav-about"><a href="https://yoanp.github.io/about/"><span>About</span></a></li>
+                    
+                        <li class="nav-tags"><a href="https://yoanp.github.io/tags/"><span>Tags</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/yoanp" target="_blank" rel="noopener"><img class="icon" src="https://yoanp.github.io/img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/crosoie" target="_blank" rel="noopener"><img class="icon" src="https://yoanp.github.io/img/twitter.svg" alt="twitter" /></a>
+        
+
+	
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+            <a href="mailto:crosoie@gmail.com"><img class="icon" src="https://yoanp.github.io/img/email.svg" alt="email" /></a>
+        
+
+        
+
+        
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Ansible을 활용한 운영 자동화 환경 구축
+
+</div>
+
+                    <div class="initials"><a href="https://yoanp.github.io"></a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Tue Aug 13 2019 14:51:17 KST'>Aug 13, 2019</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>3 minutes read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                
+
+<p>요즘 <code>Cloud Native</code>☁️란 말을 많이 듣고 있습니다.<br />
+클라우드 컴퓨팅 모델의 장점을 모두 활용하여 서비스를 개발하고 운영하는 방식이죠.<br />
+클라우드 환경에서 서비스를 시작한 회사, 많은 준비와 시행착오 끝에 Cloud 환경으로 모든 서비스를 옮긴 회사를 제외하고 서비스 특성, 환경 혹은 리소스 등의 여러가지 이유로 On Premise 환경과 Cloud 환경 모두 서비스를 운영하고 제공하는 경우가 많습니다. (제가 요기 속해있습니다.)</p>
+
+<p>당연한 말이지만 서비스가 많아지면 많아질수록 운영 난이도는 올라갑니다.<br />
+관리 포인트가 늘어나고 접근 방식이 달라지며 결정적으로 할일이 많아집니다.</p>
+
+<p><del>단순반복업무를 좋아하지 않는</del> 저는 업무에서 Ansible을 자주 활용하는 편입니다.</p>
+
+<ul>
+<li>서버 세팅, 설정</li>
+<li>서비스 빌드, 배포, 배치</li>
+<li>전체 서버에 대한 정보 수집, 전달</li>
+<li>빈번하고 <del>귀찮은</del> 불특정다수의 작업들 (동일한 작업이 2회차라면 Playbook을 작성합니다.)</li>
+<li>.. 등</li>
+</ul>
+
+<p>담당하고 있는 서비스가 IDC 뿐만이 아닌 Cloud(AWS) 환경이 늘어나면서, 동시에 접근해야하는 관리서버(Bastion Host)가 늘어나고 있습니다.</p>
+
+<p>각 관리서버마다 Ansible을 설치하고 사용하는 것도 한두번이기 때문에 이번 기회에 Cloud &amp; On Premise 환경 어디든 접근이 가능한 Ansible Host 를 구성하게 되었습니다.</p>
+
+<p>AWS의 VPC는 격리되어 있습니다.<br />
+이에 보통 Bastion Host를 구성하여 내부망에 구성 된 인스턴스에 접근하여 사용합니다.</p>
+
+<p>On-Premise 환경에 있는 Ansible 서버는 특정 AWS Private Host에 접근하기 위해서 SSH ProxyCommand를 활용합니다. (Bastion Host를 SSH 중계서버로 활용하는 방법)</p>
+
+<p><img src="https://yoanp.github.io/blog/images/cm-network.jpg" alt="image" /></p>
+
+<p>위 이미지를 정리하면 다음과 같습니다.</p>
+
+<ul>
+<li>Configuration Management Tool: Ansible Core</li>
+<li>SSH ProxyCommand를 활용 (Only Linux)</li>
+</ul>
+
+<blockquote>
+<p>Ansible to Windows같은 경우 WinRM 프로토콜로 통신을 합니다.<br />
+WinRM은 JumpHost를 따로 지원하지 않습니다.</p>
+</blockquote>
+
+<h2 id="사전준비">사전준비</h2>
+
+<ul>
+<li>Ansible Host와 Bastion Host는 SSH 통신이 되어야 합니다.<br /></li>
+<li>Ansible Host ➡️ Bastion Host ➡️ Endpoint Host 접속 계정이 미리 정의 되어 있어야 합니다.</li>
+</ul>
+
+<blockquote>
+<p>전 Ansible 전용 계정을 Bastion Host, Endpoint Host 모두 동일하게 설정하였습니다.</p>
+</blockquote>
+
+<h1 id="ansible-host">Ansible Host</h1>
+
+<blockquote>
+<p>Ansible Inventory를 Cloud 환경을 고려하여 Dynamic Inventory로 설정하여 사용하고 있습니다. (Dynamic Inventory는 이후 작성 예정)</p>
+</blockquote>
+
+<h2 id="ansible-cfg">ansible.cfg</h2>
+
+<p>ansible.cfg에 다음 설정들을 추가해줍니다.</p>
+
+<pre><code class="language-bash">cat ~/ansible.cfg
+[defaults]
+host_key_checking = False
+remote_user = ansible_user
+private_key_file = /root/.ssh/ansible_user
+
+[ssh_connection]
+ssh_args = -F ssh.cfg -o ControlMaster=auto -o ControlPersist=30m -o ForwardAgent=yes
+control_path =  ~/.ssh/ansible-%%r@%%h:%%p
+</code></pre>
+
+<ul>
+<li><code>host_key_checking</code> : endpoint host의 host_key를 확인할지에 대한 옵션입니다.<br />
+Auto Scaling에 대비하여 사용하지 않습니다.</li>
+<li><code>remote_user</code> : 사전에 정의한 Ansible 전용 계정을 정의합니다.</li>
+
+<li><p><code>private_key_file</code> : remote_user의 Private Key 를 정의합니다.</p></li>
+
+<li><p><code>ssh_args</code> : endpoint host에 접근할때의 ssh 설정을 정의합니다.<br />
+OpenSSH SSH client 설정입니다.</p>
+
+<ul>
+<li>-F ssh.cfg : configfile 을 ssh.cfg로 지정합니다.</li>
+<li>-o ControlMaster=auto : 자동으로 하나의 네트워크 연결로 여러 세션을 공유</li>
+<li>-o ControlPersist=30m : 30분동안 초기 연결이 닫혀도 세션이 유지 되도록 설정</li>
+<li>-o ForwardAgent=yes : 인증 에이전드에 대한 연결을 전달</li>
+</ul></li>
+</ul>
+
+<p>💡참고<br />
+<a href="https://docs.ansible.com/ansible/2.4/intro_configuration.html">https://docs.ansible.com/ansible/2.4/intro_configuration.html</a><br />
+<a href="https://linux.die.net/man/1/ssh">https://linux.die.net/man/1/ssh</a><br />
+<a href="https://linux.die.net/man/5/ssh_config">https://linux.die.net/man/5/ssh_config</a></p>
+
+<h2 id="ssh-cfg">ssh.cfg</h2>
+
+<p>ssh.cfg 설정을 다음과 같이 진행합니다.<br />
+AWS의 사설망의 아이피 대역을 중복되지 않게 설정하여 사용합니다. (Peering, DX 등 고려)</p>
+
+<pre><code class="language-bash">cat ~/ssh.cfg
+# A Service us-west-2(Oregon) LIVE
+Host 10.30.*
+  User ansible_user
+  ProxyCommand    ssh -W %h:%p -i /root/.ssh/ansible_user ansible_user@11.22.33.44
+  StrictHostKeyChecking no 
+  IdentityFile    /root/.ssh/ansible_user
+
+# A Service us-west-2(Oregon) Test
+Host 10.31.*
+  User ansible_user
+  ProxyCommand    ssh -W %h:%p -i /root/.ssh/ansible_user ansible_user@55.66.77.88
+  StrictHostKeyChecking no 
+  IdentityFile    /root/.ssh/ansible_user
+
+# B Service eu-central-1(Frankfurt) LIVE
+Host 10.32.*
+  User ansible_user
+  ProxyCommand    ssh -W %h:%p -i /root/.ssh/ansible_user ansible_user@12.34.56.78
+  StrictHostKeyChecking no 
+  IdentityFile    /root/.ssh/ansible_user
+</code></pre>
+
+<p>각 AWS VPC/Subnet 별로의 사설망 대역을 C Class로 Host를 설정하였습니다.<br />
+(Ip Range는 다양하게 설정이 가능합니다. <a href="https://serverfault.com/questions/803902/how-can-i-match-a-cidr-range-for-an-ssh-config-host-entry">참고_serverfault</a>)</p>
+
+<p>해당 Host로 접근시</p>
+
+<ul>
+<li>ansible_user 계정으로 접근</li>
+<li>ProxyCommand 를 이용하여, ansible_user@bastion_host 를 사용하도록 설정합니다.</li>
+</ul>
+
+<h1 id="run-example">Run Example</h1>
+
+<p>Target Endpoint IP(10.32.10.32)로 hello-world Playbook을 실행하고자 합니다.</p>
+
+<p>명령어는 다음과 같습니다.</p>
+
+<pre><code class="language-bash">ansible-playbook -i inventory/aws/ec2.py --limit 10.32.10.32 hello-world.yaml
+</code></pre>
+
+<p>통신 방향은 다음과 같습니다.<br />
+&gt; Ansible ➡️ Bastion Host(12.34.56.78) ➡️ Target Host (10.32.10.32)</p>
+
+<p>통신에 대해 조금더 디테일하게 설명하면 다음과 같습니다.<br />
+(ansible_user 계정으로 10.32.10.32 서버에 ssh 연결을 시도합니다.)</p>
+
+<ol>
+<li>ssh.cfg에 해당 아이피 대역에 맞는 Host 설정이 있는지 확인합니다. (B Service LIVE)<br /></li>
+<li>해당 설정으로 ssh 연결을 진행합니다.<br />
+Bastion Host(12.34.56.78) 에 ansible_user로 SSH 접속, 경유지로 사용합니다.<br /></li>
+</ol>
+
+<h1 id="마치며">마치며</h1>
+
+<p>글쓰기는 참 어렵습니다.<br />
+특히 오랜만에 작성하려니 더더욱 어렵네요.</p>
+
+<p>그럼 이만 :-)</p>
+
+                <br>
+                
+                  <div class="tags">
+                    <strong>Tags:</strong>
+                  
+                    <a href="https://yoanp.github.io/tags/ansible">ansible</a>
+                  
+                    <a href="https://yoanp.github.io/tags/ssh">ssh</a>
+                  
+                  </div>
+                  <br />
+                
+                <p class="back-to-posts"><a href="https://yoanp.github.io/blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                
+            </div>
+            
+            <script src="https://utteranc.es/client.js"
+                repo=yoanp/blog_comment
+                issue-term="pathname"
+                theme="github-light"
+                crossorigin="anonymous"
+                async>
+            </script>
+            
+        </div>
+    </div>
+</section>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-54005049-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+  
+
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+
